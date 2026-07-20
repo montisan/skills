@@ -31,6 +31,20 @@ haoxu auth status --json
 
 配置写入 `~/.haoxu/config.json`。默认 Bridge：`http://127.0.0.1:19321`。完整小白教程：仓库 `Desktop/docs/agent/haoxu-agent-guide.md` §1–§2。
 
+## 通用约定（所有命令）
+
+| 约定 | 说明 |
+|------|------|
+| `--json` | **强烈建议始终加上**：机器可读；Agent 解析优先用 JSON |
+| `--page` / `--page-size` | 列表分页；省略则用 Bridge 默认。部分远端接口 `pageSize` **上限 20** |
+| 多选 ID | CLI 用逗号分隔（`--group a,b`）；MCP/HTTP 用数组或逗号，视字段而定 |
+| `--confirm` / `confirm: true` | **删除类**必填，否则 `400 VALIDATION_ERROR` |
+| 本机绝对路径 | 稿件导入、设封面、素材上传等：路径须绝对路径，且**号续与 Agent 同机**可读 |
+| `haoxu auth status` | 检查 `enabled`、登录用户；`readonly: false` 表示本阶段写能力已开放（勿因旧文档误判「只能读」） |
+| 写后进度 | 存稿/发表 `start` **无 Job**：用 `draft-tasks get` / `publish-tasks get` 轮询 `status`；批量检测/导入返回 `jobId` → `jobs get` |
+
+**Announce 后先跑：** `haoxu auth status --json`（确认 Bridge 通、已登录、`readonly` 为 `false`）。
+
 ## 能力边界
 
 **允许（读）：** 查询账号与统计、稿件、存稿任务、发表任务、分组、标签、代理 IP、稿件分类、员工（主账号）、**公众号远端草稿箱与发表记录**。
@@ -126,26 +140,34 @@ haoxu employees get <员工ID> --json
 ### 账号元数据写操作（0.4.0）
 
 ```bash
-# 修改号主/备注（至少传一项）
+# 修改号主/备注（至少传 --owner / --remark1 / --remark2 之一）
 haoxu accounts patch <id> --owner 张三 --json
 haoxu accounts patch <id> --remark1 备注A --remark2 备注B --json
 
-# 移组（ungrouped = 移出分组）
+# 移组：--group 为分组 ID，或哨兵 ungrouped（移出分组）
 haoxu accounts move-group <id> --group <groupId|ungrouped> --json
 
-# 设标签（全量替换，逗号分隔；空 = 清空）
+# 设标签：全量替换；逗号分隔 ID；--tags 传空字符串可清空
 haoxu accounts set-tags <id> --tags t1,t2 --json
 
-# 分组 CRUD
-haoxu groups create --name 新分组 --json
-haoxu groups update <id> --name 改名 --json
+# 分组 CRUD（delete 须 --confirm）
+haoxu groups create --name 新分组 [--description 说明] [--color '#1fc372'] [--sort 0] --json
+haoxu groups update <id> [--name 改名] [--description ...] [--color ...] [--sort n] --json
 haoxu groups delete <id> --confirm --json
 
-# 标签 CRUD
-haoxu tags create --name 新标签 --json
-haoxu tags update <id> --name 改名 --json
+# 标签 CRUD（delete 须 --confirm；创建/更新受会员额度限制）
+haoxu tags create --name 新标签 [--color ...] [--sort n] --json
+haoxu tags update <id> [--name 改名] [--color ...] [--sort n] --json
 haoxu tags delete <id> --confirm --json
 ```
+
+| 命令 | Flag / 参数 | 说明 |
+|------|-------------|------|
+| `accounts patch` | `--owner` / `--remark1` / `--remark2` | 字符串；至少一项；未传字段不改 |
+| `accounts move-group` | `--group` | 分组 ID 或 `ungrouped`（必填） |
+| `accounts set-tags` | `--tags` | 逗号分隔标签 ID；全量替换；可为空 |
+| `groups create` | `--name`（必填）、`--description`、`--color`、`--sort` | 与 UI 分组字段对齐 |
+| `groups\|tags delete` | `--confirm` | 必填 |
 
 ### 代理写操作（0.5.0）
 
@@ -169,19 +191,33 @@ haoxu ip-proxies import --file ./proxies.xlsx --group <groupId> --json
 haoxu jobs get <jobId> --json
 
 # 账号绑定代理
+# --mode direct：直连（不绑库内代理）
+# --mode managed：须 --ip-proxy-id；可选 --identity-reuse
+# --mode custom：须 --payload-file（自定义代理 JSON，字段对齐 UI）
 haoxu accounts bind-proxy --accounts a1,a2 --mode managed --ip-proxy-id <id> --json
 haoxu accounts bind-proxy --accounts a1 --mode direct --json
 haoxu accounts bind-proxy --accounts a1 --mode custom --payload-file ./proxy.json --json
 
-# 单账号代理检测（对齐 UI「代理检测」）
+# 单账号代理检测（对齐 UI「代理检测」；≠ accounts detect）
 haoxu accounts proxy-detect <accountId> --json
 
-# 批量代理检测（异步；--poll 自动轮询 Job，间隔 1s，超时 120s）
+# 批量代理检测（异步返回 jobId；--poll 自动轮询，间隔 1s，超时 120s）
 haoxu accounts proxy-detect-batch --accounts a1,a2 --poll --json
 
 # 无库连通性 test（不入库）
-haoxu proxy test --host 1.2.3.4 --port 1080 --type socks5 --username u --password p --json
+haoxu proxy test --host 1.2.3.4 --port 1080 --type socks5 [--username u] [--password p] --json
 ```
+
+| 命令 | Flag | 说明 |
+|------|------|------|
+| `ip-proxies create` | `--host` `--port` `--type` | 必填；`type`: `socks5` \| `https` \| `http` |
+| | `--label` `--region` `--username` `--password` `--group` | 可选 |
+| `ip-proxies batch-create` | `--file` | JSON 文件，根对象含 `items` 数组 |
+| `ip-proxies move-group` | `--ids` `--group` | 代理 ID 列表；目标分组或 `ungrouped` |
+| `ip-proxies import` | `--file` `--group` | Excel；异步 → `jobId` |
+| `accounts bind-proxy` | `--accounts` `--mode` | 必填；mode 见上 |
+| | `--ip-proxy-id` / `--identity-reuse` / `--payload-file` | 依 mode |
+| `proxy-detect-batch` | `--accounts` `--poll` | `--poll` 可选 |
 
 ### 统计刷新 / 账号检测 / 未读（0.6.0）
 
@@ -214,18 +250,26 @@ haoxu accounts refresh-unread-batch [--accounts a1,a2] [--poll] [--json]
 路径须为**本机绝对路径**（如 `/Users/me/article.zip`）；号续与 Agent 同机，Bridge 直接读盘。**不支持飞书**。
 
 ```bash
-# 从本机路径导入（含 zip；可选分类与去重标题）
+# --paths：逗号分隔绝对路径（docx/html/md/txt/zip 等）
+# --category：可选，已存在分类 ID（categories list）
+# --strip-duplicate-title：可选，去重标题策略
 haoxu manuscripts import-paths --paths /abs/a.docx,/abs/b.zip [--category <id>] [--strip-duplicate-title] --json
 
-# 从公众号链接导入
+# --urls：逗号分隔公众号文章链接
 haoxu manuscripts import-links --urls https://mp.weixin.qq.com/s/xxx,https://mp.weixin.qq.com/s/yyy [--category <id>] --json
 ```
 
-同步返回 `{ imported, errors }`；部分失败仍 exit 0（成功进 `imported`，失败进 `errors`）。可选 `--category` 须为已存在分类 ID（`categories list` 查询）；不做分类 CRUD。
+同步返回 `{ imported, errors }`；部分失败仍 exit 0。不做分类 CRUD。
+
+| Flag | 说明 |
+|------|------|
+| `--paths` / `--urls` | 必填（二选一命令）；逗号分隔 |
+| `--category` | 可选分类 ID |
+| `--strip-duplicate-title` | 仅 import-paths |
 
 ### 单篇稿件设封面（0.9.0）
 
-`--file` / `--url` / `--clear` **互斥**；本机路径须**绝对路径**，号续与 Agent **同机**可读（与 import-paths 相同约束）。成功返回 `{ coverUrl: string | null }`（clear 时 `coverUrl` 为 `null`）。
+`--file` / `--url` / `--clear` **三选一互斥**；`--file` 须绝对路径且同机可读。成功 `{ coverUrl: string | null }`（clear 时为 `null`）。无批量 API，循环调用即可。
 
 ```bash
 haoxu manuscripts set-cover <稿件ID> --file /abs/cover.jpg --json
@@ -233,88 +277,83 @@ haoxu manuscripts set-cover <稿件ID> --url https://example.com/cover.png --jso
 haoxu manuscripts set-cover <稿件ID> --clear --json
 ```
 
-### 存稿 / 发表写操作（0.8.0）
+### 存稿 / 发表写操作（0.8.0 + 1.1.0 from-drafts）
 
-复杂存稿配置优先 `--payload-file`（JSON 对齐 create body，可含 `start`；**payload 覆盖同名 CLI flags**）。启动后 fire-and-forget，**须轮询 GET** 直至终态：
+复杂存稿配置优先 `--payload-file`（JSON 对齐 create body，可含 `start`；**payload 覆盖同名 CLI flags**）。启动后 fire-and-forget，**须轮询 GET** 直至终态。
 
 ```bash
 # 创建存稿（可选 --start 创建后立即启动）
 haoxu draft-tasks create --account <账号ID> --manuscripts m1,m2 [--payload-file ./draft.json] [--start] --json
 haoxu draft-tasks start <任务ID> --json
 haoxu draft-tasks cancel <任务ID> --json
-haoxu draft-tasks delete <任务ID> --confirm --json
-
-# 轮询进度
-haoxu draft-tasks get <任务ID> --json
+haoxu draft-tasks delete <任务ID> --confirm --json   # 删除须 --confirm
+haoxu draft-tasks get <任务ID> --json                # 轮询 status
 
 # 从已完成存稿创建发表（可选定时 + --start）
-haoxu publish-tasks from-batch-draft --tasks d1,d2 [--schedule-date <label> --schedule-hour <h> --schedule-minute <m>] [--start] --json
+haoxu publish-tasks from-batch-draft --tasks d1,d2 \
+  [--schedule-date <label> --schedule-hour <h> --schedule-minute <m>] [--start] --json
 
-# 从远端草稿箱创建发表（from-drafts 默认只建，须 --start；from-first-drafts 自动开跑）
-haoxu publish-tasks from-drafts --drafts '[{"accountId":"a1","platformDraftId":"d1","draftTitle":"标题"}]' [--schedule-date <label> --schedule-hour <h> --schedule-minute <m>] [--start] --json
-haoxu publish-tasks from-drafts --drafts-file ./drafts.json [--start] --json
+# 从远端草稿箱指定草稿创建发表（1.1.0）
+# drafts 元素：{ accountId, platformDraftId, draftTitle }；--drafts 与 --drafts-file 互斥
+# 默认只建任务；须 --start 才入队执行
+haoxu publish-tasks from-drafts --drafts '[{"accountId":"a1","platformDraftId":"d1","draftTitle":"标题"}]' [--start] --json
+haoxu publish-tasks from-drafts --drafts-file ./drafts.json \
+  [--schedule-date 今天 --schedule-hour 8 --schedule-minute 0] [--start] --json
+
+# 各账号远端草稿箱「首条」创建发表（1.1.0；创建后自动开跑，无 --start / 无 schedule）
+# --draft-type: article=图文，sticker=贴图（对齐 UI 今日首条）
 haoxu publish-tasks from-first-drafts --accounts a1,a2 --draft-type article --json
+
 haoxu publish-tasks start <任务ID> --json
 haoxu publish-tasks start-batch --ids p1,p2 --json
 haoxu publish-tasks start-all-pending --json
-
-# 轮询发表进度
-haoxu publish-tasks get <任务ID> --json
+haoxu publish-tasks get <任务ID> --json              # 轮询 status
 ```
+
+| 命令 | Flag | 说明 |
+|------|------|------|
+| `draft-tasks create` | `--account` `--manuscripts` | 必填；稿件 ID 逗号分隔 |
+| | `--payload-file` | 可选；完整 create body JSON，覆盖 flags |
+| | `--start` | 可选；`true` 时创建后立即启动 |
+| `draft-tasks delete` | `--confirm` | 必填 |
+| `from-batch-draft` | `--tasks` | 存稿任务 ID 列表 |
+| | `--schedule-date` `--schedule-hour` `--schedule-minute` | 须**三者同时**才定时；否则立即模式 |
+| | `--start` | 可选；默认只建不跑 |
+| `from-drafts` | `--drafts` \| `--drafts-file` | 互斥；JSON 数组非空 |
+| | schedule 三件套、`--start` | 同 from-batch-draft |
+| `from-first-drafts` | `--accounts` `--draft-type` | 必填；`article` \| `sticker`；**自动开跑** |
+| `start-batch` | `--ids` | 发表任务 ID 列表 |
 
 员工仅可操作**可见账号**下任务；不可见 → `404 NOT_FOUND`。账号离线/非公众号不可存稿 → `503 ACCOUNT_NOT_READY`。
 
-响应 DTO **不含 password**；创建/更新请求体可含 password。
+响应 DTO **不含 password**；创建/更新代理请求体可含 password。
 
-### 公众号面板远端写（1.0.0）
+### 公众号远端草稿箱 / 已发表 / 素材库（读 0.3.0 + 写 1.0.0）
 
-须目标账号**在线**且已登录公众平台。草稿另存为**全同步**，可能较久；上传/删图路径须**本机绝对路径**、号续与 Agent **同机**。
-
-```bash
-haoxu accounts mp-drafts-delete <账号ID> <draftId> --confirm --json
-haoxu accounts mp-drafts-sync <账号ID> <draftId> --targets id1,id2 [--upload-material] --json
-haoxu accounts mp-published-private <账号ID> --items-file ./private.json --json
-haoxu accounts mp-images <账号ID> [--group <id>] --json
-haoxu accounts mp-images-upload <账号ID> --file /abs/image.jpg --json
-haoxu accounts mp-images-delete <账号ID> --ids 1,2 --group-ids 0,0 --confirm --json
-```
-
-### 公众号远端（0.3.0 读）
-
-实时查询微信公众平台，**非**号续本地任务表。需**目标账号在线**且已登录公众平台（有可用 session）。
+实时查询/操作微信公众平台，**非**号续本地任务表。须**目标账号在线**且已登录公众平台。草稿另存为**全同步**，可能较久。
 
 ```bash
-# 先查在线账号 ID
-haoxu accounts list --quick-filter online --json
-
-# 草稿箱关键词搜索
+# —— 读 ——
+haoxu accounts list --quick-filter online --json          # 先找在线账号
 haoxu accounts mp-drafts <账号ID> --q 关键词 --json
-
-# 贴图草稿
-haoxu accounts mp-drafts <账号ID> --content-type note --json
-
-# 今天发表记录
+haoxu accounts mp-drafts <账号ID> --content-type note --json   # 贴图草稿
 haoxu accounts mp-published <账号ID> --date-preset today --json
-
-# 自定义日期范围
 haoxu accounts mp-published <账号ID> --from 2026-07-01 --to 2026-07-17 --json
+haoxu accounts mp-images <账号ID> [--group <id>] [--page n] [--page-size n] --json
 
-# 删远端草稿（须 --confirm）
+# —— 写 ——
 haoxu accounts mp-drafts-delete <账号ID> <draftId> --confirm --json
-
-# 草稿另存到其他账号（全同步，可能较久）
+# --targets：另存目标账号 ID；--upload-material：同步时上传到目标素材库
 haoxu accounts mp-drafts-sync <账号ID> <draftId> --targets id1,id2 [--upload-material] --json
-
-# 已发表设/取消仅自己可见（privateType: 1=仅自己可见，0=取消）
+# privateType: 1=仅自己可见，0=取消；--items 与 --items-file 互斥
 haoxu accounts mp-published-private <账号ID> --items '[{"appmsgid":123,"itemidx":1,"privateType":1}]' --json
-
-# 素材库 list / 上传 / 删图（上传须本机绝对路径、同机；删图须 --confirm 与 --group-ids）
-haoxu accounts mp-images <账号ID> [--group <id>] --json
-haoxu accounts mp-images-upload <账号ID> --file /abs/image.jpg --json
+haoxu accounts mp-published-private <账号ID> --items-file ./private.json --json
+haoxu accounts mp-images-upload <账号ID> --file /abs/image.jpg --json   # 须绝对路径、同机
+# --ids 与 --group-ids 等长对应；须 --confirm
 haoxu accounts mp-images-delete <账号ID> --ids 1,2 --group-ids 0,0 --confirm --json
 ```
 
-#### 草稿箱 `accounts mp-drafts`
+#### `accounts mp-drafts`（读）
 
 | Flag | 取值 |
 |------|------|
@@ -322,7 +361,7 @@ haoxu accounts mp-images-delete <账号ID> --ids 1,2 --group-ids 0,0 --confirm -
 | `--content-type` | `article`（默认）\| `note` |
 | `--page` / `--page-size` | 分页（pageSize 上限 20） |
 
-#### 发表记录 `accounts mp-published`
+#### `accounts mp-published`（读）
 
 | Flag | 取值 |
 |------|------|
@@ -331,9 +370,19 @@ haoxu accounts mp-images-delete <账号ID> --ids 1,2 --group-ids 0,0 --confirm -
 | `--from` / `--to` | `YYYY-MM-DD`，须成对；与 `--date-preset` **互斥** |
 | `--page` / `--page-size` | 分页（pageSize 上限 20） |
 
-**`scanExhausted`：** 带日期条件时 Bridge 会**有界跨页扫描**（最多 10 页微信列表）。若响应中 `scanExhausted: true`，表示达扫描上限提前停止，区间内结果**可能不完整**——应缩小日期范围或告知用户。
+**`scanExhausted`：** 带日期条件时 Bridge **有界跨页扫描**（最多 10 页）。若 `scanExhausted: true`，区间结果**可能不完整**——应缩小日期范围或告知用户。自然日按**号续桌面端本地时区**。
 
-自然日（today 等）按**号续桌面端系统本地时区**计算。
+#### 写操作参数
+
+| 命令 | Flag | 说明 |
+|------|------|------|
+| `mp-drafts-delete` | `--confirm` | 必填 |
+| `mp-drafts-sync` | `--targets` | 必填；目标账号 ID 逗号分隔 |
+| | `--upload-material` | 可选；默认 false |
+| `mp-published-private` | `--items` \| `--items-file` | 互斥；元素含 `appmsgid`、`itemidx`、`privateType`（0\|1） |
+| `mp-images` | `--group` `--page` `--page-size` | 可选；pageSize 上限 20 |
+| `mp-images-upload` | `--file` | 必填；本机**绝对路径** |
+| `mp-images-delete` | `--ids` `--group-ids` `--confirm` | 均必填；两列表等长对应 |
 
 ## 列表过滤（英文码，与 UI 对齐）
 
@@ -418,6 +467,7 @@ haoxu publish-tasks list --status scheduled --json
 |------|------|
 | Connection refused / exit 3 | 启动号续并启用 Agent Bridge |
 | 401 / exit 2 | `haoxu auth set-key` 或重新生成 Key |
+| 误以为「只读不可写」 | 看 `haoxu auth status --json`：`readonly` 应为 `false`；并确认桌面端含写能力（≥ 配套 1.1.0 Bridge）。旧桌面端写路由缺失时会 `404 未找到资源` |
 | 503 APP_NOT_READY | 在号续内完成登录 |
 | 503 ACCOUNT_NOT_READY | 目标账号离线或未登录公众平台 |
 | 401 REMOTE_UNAUTHORIZED | 微信侧 session 失效，在号续内重新登录该账号 |
@@ -425,7 +475,7 @@ haoxu publish-tasks list --status scheduled --json
 | 403 FORBIDDEN（employees / move-group / groups / 代理 delete·move-group） | 需主账号登录 |
 | 403 FORBIDDEN（tags / 代理 update 额度） | 会员额度不足 |
 | 404 NOT_FOUND（mp-* / 不可见账号·代理） | 资源不存在或员工不可见 |
-| 400 VALIDATION_ERROR（delete） | 删除分组/标签/代理/存稿任务须 `--confirm` |
+| 400 VALIDATION_ERROR（delete） | 删除须 `--confirm` / `confirm: true` |
 | 404 NOT_FOUND（jobs） | jobId 不存在、已 TTL 清理，或号续已重启 |
 | `haoxu: command not found` | `npm install -g @haoxu/cli@1.1.0` |
 | 未知命令 / 过滤无效 | 升级桌面端与 CLI 至 1.1.0 |
@@ -485,7 +535,26 @@ haoxu publish-tasks list --status scheduled --json
 | `haoxu_start_publish_tasks_batch` | 批量启动发表任务 |
 | `haoxu_start_all_pending_publish_tasks` | 启动全部可见待执行发表任务 |
 
-MCP 参数名与 HTTP query/body 对齐（如 `quickFilter`、`groupId`、`assigned`、`completed`、`status`、`contentType`、`datePreset`）。`haoxu_import_ip_proxies`、`haoxu_detect_account_proxy_batch` 及 Phase C 批量工具返回 `jobId`，用 `haoxu_get_job` 轮询；Job 内存存储，号续重启后丢失。稿件导入与存稿/发表写为**同步** fire-and-forget；启动后用 `haoxu_get_draft_task` / `haoxu_get_publish_task` 轮询进度。
+### MCP 写工具关键参数（与 CLI 对齐）
+
+| 工具 | 关键参数 |
+|------|----------|
+| `haoxu_patch_account` | `id`；`owner` / `remark1` / `remark2` 至少一 |
+| `haoxu_move_account_group` | `id`；`groupId` 或 `ungrouped` |
+| `haoxu_set_account_tags` | `id`；`tagIds: string[]`（全量替换，可空） |
+| `haoxu_*_delete_*` / `haoxu_delete_*` | 须 `confirm: true` |
+| `haoxu_bind_accounts_proxy` | `accountIds`；`mode`: direct\|managed\|custom；managed 须 `ipProxyId` |
+| `haoxu_set_manuscript_cover` | `id`；`source`: local\|url\|clear；local 须 `filePath` 绝对路径 |
+| `haoxu_create_batch_draft_task` | 对齐存稿 create body；可选 `start: true` |
+| `haoxu_create_publish_tasks_from_batch_draft` | `batchDraftTaskIds`；可选 `schedule`、`start` |
+| `haoxu_create_publish_tasks_from_drafts` | `drafts: [{ accountId, platformDraftId, draftTitle }]`；可选 `schedule`、`start`（默认只建） |
+| `haoxu_create_publish_tasks_from_first_drafts` | `accountIds`；`draftType`: article\|sticker（**自动开跑**） |
+| `haoxu_sync_mp_draft` | `accountId`；`draftId`；`targetAccountIds`；可选 `uploadToMaterial` |
+| `haoxu_update_mp_published_private` | `accountId`；`items: [{ appmsgid, itemidx, privateType }]` |
+| `haoxu_upload_mp_image` | `accountId`；`filePath` 绝对路径 |
+| `haoxu_delete_mp_images` | `accountId`；`imageIds`；`groupIds`；`confirm: true` |
+
+MCP 参数名与 HTTP query/body 对齐（如 `quickFilter`、`groupId`、`assigned`、`completed`、`status`、`contentType`、`datePreset`）。异步工具返回 `jobId` → `haoxu_get_job`；存稿/发表 start 后用 `haoxu_get_draft_task` / `haoxu_get_publish_task` 轮询。
 
 ## 安装本 Skill / CLI / MCP
 
