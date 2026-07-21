@@ -1,6 +1,6 @@
 ---
 name: haoxu-agent
-description: 通过 haoxu CLI 查询号续账号、稿件、存稿任务、发表任务、分组/标签/代理 IP/稿件分类/员工，支持公众号远端草稿箱与发表记录查询，以及账号元数据写操作（号主/备注、移组、设标签、分组/标签 CRUD）、代理写操作（代理库 CRUD/绑定/检测/Excel 导入、异步 Job）、统计刷新/账号检测/未读刷新（0.6.0）、稿件路径/链接导入（0.7.0）、存稿/发表写操作（0.8.0）、单篇稿件设封面（0.9.0）、公众号面板远端写（1.0.0）、远端草稿箱发表 from-drafts / from-first-drafts（1.1.0）与单篇设原文链接（1.2.0）。Use when the user asks to query or update HaoXu data, list accounts/manuscripts/draft tasks/publish tasks/groups/tags/ip-proxies/categories/employees, query WeChat MP drafts/published posts, delete/sync MP drafts, update MP published private, list/upload/delete MP images, patch account owner/remarks, move groups, set tags, manage proxies, bind proxy, test proxy, import proxies, detect account proxy, refresh account metrics, detect account, refresh unread, import manuscripts from paths or links, set manuscript cover, set manuscript source url, create/start/cancel/delete draft tasks, create/start publish tasks from batch draft, create publish tasks from drafts or first drafts, or mentions haoxu CLI / Agent Bridge.
+description: 通过 haoxu CLI 查询号续账号、稿件、存稿任务、发表任务、分组/标签/代理 IP/稿件分类/员工，支持公众号远端草稿箱与发表记录查询，以及账号元数据写操作（号主/备注、移组、设标签、分组/标签 CRUD）、代理写操作（代理库 CRUD/绑定/检测/Excel 导入、异步 Job）、统计刷新/账号检测/未读刷新（0.6.0）、稿件路径/链接导入（0.7.0）、存稿/发表写操作（0.8.0；存稿 create 支持 originalityConfig 作者/原创等全量配置）、单篇稿件设封面（0.9.0）、公众号面板远端写（1.0.0）、远端草稿箱发表 from-drafts / from-first-drafts（1.1.0）与单篇设原文链接（1.2.0）。Use when the user asks to query or update HaoXu data, list accounts/manuscripts/draft tasks/publish tasks/groups/tags/ip-proxies/categories/employees, query WeChat MP drafts/published posts, delete/sync MP drafts, update MP published private, list/upload/delete MP images, patch account owner/remarks, move groups, set tags, manage proxies, bind proxy, test proxy, import proxies, detect account proxy, refresh account metrics, detect account, refresh unread, import manuscripts from paths or links, set manuscript cover, set manuscript source url, create/start/cancel/delete draft tasks (including originality/author via originalityConfig), create/start publish tasks from batch draft, create publish tasks from drafts or first drafts, or mentions haoxu CLI / Agent Bridge.
 ---
 
 # 号续 Agent（查询 + 账号元数据写 + 代理写 + 统计刷新）
@@ -57,7 +57,7 @@ haoxu auth status --json
 
 **允许（写，0.7.0）：** 本机**绝对路径**（含 zip/docx/html/md/txt 等）与**公众号文章链接**导入稿件（同步返回 `{ imported, errors }`）。号续与 Agent **须同机**，路径须号续进程可读；Bridge 不弹文件对话框。**不支持飞书**、base64 上传或分类 CRUD。
 
-**允许（写，0.8.0）：** 存稿任务 create/start/cancel/delete（create 可选 `--content-mode article|note`、`--start` / `start: true`；**默认 article 图文**；贴图用 `note`）；发表任务 from-batch-draft create、单条 start、start-batch、start-all-pending（create 可选定时 `schedule` 与 `--start`）。启动后**无 Job**，须轮询 `draft-tasks get` / `publish-tasks get` 查看 `status` 直至终态。
+**允许（写，0.8.0）：** 存稿任务 create/start/cancel/delete（create 可选 `--content-mode article|note`、`--start`；**默认 article 图文**；贴图用 `note`；**作者/原创/留言/赞赏/广告/创作来源等与 UI 同级配置须 `--payload-file` / MCP body 的 `originalityConfig` 等字段**，禁止顶层 `author`/`isOriginal`）；发表任务 from-batch-draft create、单条 start、start-batch、start-all-pending（create 可选定时 `schedule` 与 `--start`）。启动后**无 Job**，须轮询 `draft-tasks get` / `publish-tasks get` 查看 `status` 直至终态。
 
 **允许（写，0.9.0）：** 单篇稿件设封面（`--file` 本机绝对路径 / `--url` HTTP(S) / `--clear` 清除；三选一互斥）。`--file` 须号续与 Agent **同机**可读；成功返回 `{ coverUrl: string | null }`。批量设封面由 Agent 循环调用，无专用批量 API。
 
@@ -213,14 +213,32 @@ haoxu proxy test --host 1.2.3.4 --port 1080 --type socks5 [--username u] [--pass
 
 | 命令 | Flag | 说明 |
 |------|------|------|
-| `ip-proxies create` | `--host` `--port` `--type` | 必填；`type`: `socks5` \| `https` \| `http` |
-| | `--label` `--region` `--username` `--password` `--group` | 可选 |
-| `ip-proxies batch-create` | `--file` | JSON 文件，根对象含 `items` 数组 |
+| `ip-proxies create` | `--host` `--port` `--type` | 必填；`type` 大小写不敏感，归一为 `SOCKS5` \| `HTTPS` \| `HTTP` |
+| | `--label` `--region` `--username` `--password` `--anonymity` `--remark` | 可选字符串 |
+| | `--extract-url` `--exit-ip` `--group` `--latency` | 可选；`--group`→`groupId`；`--extract-url`→`extractUrl`；`--exit-ip`→`exitIp` |
+| `ip-proxies update` | 同上可改字段 + `--status`（`healthy`\|`slow`\|`failed`） | 至少一项；未知键拒绝 |
+| `ip-proxies batch-create` | `--file` | JSON：`{ items: [...] }` 或纯数组；元素字段同 create |
 | `ip-proxies move-group` | `--ids` `--group` | 代理 ID 列表；目标分组或 `ungrouped` |
 | `ip-proxies import` | `--file` `--group` | Excel；异步 → `jobId` |
-| `accounts bind-proxy` | `--accounts` `--mode` | 必填；mode 见上 |
-| | `--ip-proxy-id` / `--identity-reuse` / `--payload-file` | 依 mode |
+| `ip-proxies delete` | `--confirm` | 必填 |
+| `ip-proxies test` | （无额外 flag） | 入库节点连通性；失败仍 200，状态写入 DTO |
+| `accounts bind-proxy` | `--accounts` `--mode` | 必填；`direct` \| `managed` \| `custom` |
+| | `--ip-proxy-id` / `--identity-reuse` | 仅 `managed`；`--identity-reuse`→`identityReuse: true` |
+| | `--payload-file` | 仅 `custom`：JSON 为 **ipProxy 嵌入对象**（见下），不是整包 payload |
 | `proxy-detect-batch` | `--accounts` `--poll` | `--poll` 可选 |
+| `proxy test` | `--host` `--port` `--type` | 必填；可选 `--username` `--password`；不入库 |
+
+**`bind-proxy --mode custom` 的 `--payload-file`（ipProxy 对象）：**
+
+| 字段 | 必填 | 说明 |
+|------|------|------|
+| `host` / `port` / `type` | 是 | `type`：`SOCKS5`\|`HTTPS`\|`HTTP`（大小写不敏感） |
+| `label` / `region` / `username` / `password` / `anonymity` / `extractUrl` / `exitIp` | 否 | `region` 默认「其他」 |
+| `status` / `latency` / `lastCheckTime` / `createdAt` / `updatedAt` | 否 | `status` 默认 `healthy` |
+
+```json
+{ "host": "1.2.3.4", "port": 1080, "type": "socks5", "label": "节点A", "username": "u", "password": "p" }
+```
 
 ### 统计刷新 / 账号检测 / 未读（0.6.0）
 
@@ -292,7 +310,7 @@ haoxu manuscripts list --source-url unset --json
 
 ### 存稿 / 发表写操作（0.8.0 + 1.1.0 from-drafts）
 
-复杂存稿配置优先 `--payload-file`（JSON 对齐 create body，可含 `start`；**payload 覆盖同名 CLI flags**）。启动后 fire-and-forget，**须轮询 GET** 直至终态。
+复杂存稿配置优先 `--payload-file`（JSON 对齐 create body，可含 `start`；**payload 覆盖同名 CLI flags**）。作者/原创/留言/赞赏/广告等见下方「存稿 create body」——**勿**用顶层 `author`/`isOriginal`。启动后 fire-and-forget，**须轮询 GET** 直至终态。
 
 ```bash
 # 创建存稿（可选 --start；默认 contentMode=article 图文）
@@ -327,18 +345,101 @@ haoxu publish-tasks get <任务ID> --json              # 轮询 status
 
 | 命令 | Flag | 说明 |
 |------|------|------|
-| `draft-tasks create` | `--account` `--manuscripts` | 必填；稿件 ID 逗号分隔 |
+| `draft-tasks create` | `--account` `--manuscripts` | 必填；稿件 ID 逗号分隔（映射 body `accountId` / `manuscriptIds`） |
 | | `--content-mode` | 可选；`article`（默认图文）\| `note`（贴图；亦接受 `sticker`→note） |
-| | `--payload-file` | 可选；完整 create body JSON，**覆盖**同名 flags（含 `contentMode`） |
+| | `--payload-file` | 可选；完整 create body JSON，**覆盖**同名 flags；见下方「存稿 create body」 |
 | | `--start` | 可选；`true` 时创建后立即启动 |
 | `draft-tasks delete` | `--confirm` | 必填 |
-| `from-batch-draft` | `--tasks` | 存稿任务 ID 列表 |
-| | `--schedule-date` `--schedule-hour` `--schedule-minute` | 须**三者同时**才定时；否则立即模式 |
+| `from-batch-draft` | `--tasks` | 存稿任务 ID 列表（body：`batchDraftTaskIds`） |
+| | `--schedule-date` `--schedule-hour` `--schedule-minute` | 须**三者同时**才定时；映射 `schedule: { dateLabel, hour, minute }`；否则立即模式 |
 | | `--start` | 可选；默认只建不跑 |
-| `from-drafts` | `--drafts` \| `--drafts-file` | 互斥；JSON 数组非空 |
+| `from-drafts` | `--drafts` \| `--drafts-file` | 互斥；JSON 数组非空；元素：`{ accountId, platformDraftId, draftTitle }` |
 | | schedule 三件套、`--start` | 同 from-batch-draft |
-| `from-first-drafts` | `--accounts` `--draft-type` | 必填；`article` \| `sticker`；**自动开跑** |
+| `from-first-drafts` | `--accounts` `--draft-type` | 必填；`article` \| `sticker`；**自动开跑**（无 `--start` / 无 schedule） |
 | `start-batch` | `--ids` | 发表任务 ID 列表 |
+
+#### 存稿 create body（`--payload-file` / MCP `haoxu_create_batch_draft_task`）
+
+Bridge **严格拒绝未知顶层键**（`VALIDATION_ERROR: 未知字段：...`）。允许字段仅下表；**禁止**顶层 `author` / `copyrightType` / `copyright_type` / `isOriginal` / `is_original` / `manualAuthor`（作者与原创必须放在 `originalityConfig` 内）。
+
+| 字段 | 类型 | 省略时默认 | 说明 |
+|------|------|------------|------|
+| `accountId` | string | —（必填） | 目标账号 ID |
+| `manuscriptIds` | string[] | —（必填，非空） | 稿件 ID |
+| `contentMode` | `article` \| `note` | `article` | 图文 / 贴图 |
+| `mergeMode` | `merge` \| `separate` | 按稿件数与 contentMode 推导 | 合并成一条推文 / 各篇分开；贴图强制 separate |
+| `uploadMode` | `cdn` \| `material` | 图文默认 `cdn`；贴图强制 `material` | 图片上传通道 |
+| `manuscriptsPerTweet` | number 1–8 | merge 时≈稿件数，separate 时为 1 | 每条推文合并稿件数 |
+| `imageDedupEnabled` | boolean | `false` | 图片去重 |
+| `noteEmptyTitleEnabled` | boolean | `false` | 贴图允许空标题 |
+| `autoClearAfterSave` | boolean | `false` | 存稿成功后从本地稿库清稿 |
+| `commentConfig` | object | 见下（默认开留言） | 留言 |
+| `originalityConfig` | object | **未声明原创**（与 UI 默认常不同） | 原创声明 + 作者 |
+| `rewardConfig` | object | `{ enabled: false }` | 赞赏；图文须已声明原创才生效，贴图可直接开 |
+| `claimSourceConfig` | object | `{ claimSourceType: 0 }` | 创作来源声明 |
+| `adConfig` | object | 见下 | 文中/留言区/关键词广告 |
+| `followUpPublishSchedule` | `{ dateLabel, hour, minute }` \| `null` | `null` | 存稿完成后跟进定时发表（与 UI 一致） |
+| `start` | boolean | `false` | 仅 create 请求；创建后立即启动 |
+
+**`originalityConfig`（作者 / 原创）：**
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `declareOriginal` | boolean | `true`=声明原创 |
+| `useAccountName` | boolean | `true`=作者用账号名；`false`=用 `manualAuthor` |
+| `manualAuthor` | string | 手动作者，最多 **8** 字（多余截断） |
+| `allowFastReprint` | boolean | 允许快速转载（仅声明原创时有意义） |
+
+**`claimSourceConfig`：** `claimSourceType` 为 `0`–`6`：`0` 无需声明；`1` 内容由AI生成；`2` 素材来源官方媒体/网络新闻；`3` 内容剧情演绎，仅供娱乐；`4` 个人观点，仅供参考；`5` 健康医疗分享，仅供参考；`6` 投资观点，仅供参考。
+
+**`commentConfig`：**
+
+| 字段 | 说明 |
+|------|------|
+| `needOpenComment` | 是否开留言（默认 `true`） |
+| `onlyFansCanComment` / `onlyFansDaysCanComment` | 受众：二者不可同时为 `true`；均为 `false`=所有人 |
+| `autoElectComment` | 留言自动精选公开 |
+
+**`rewardConfig`：** `{ enabled: boolean }`。
+
+**`adConfig`：**
+
+| 字段 | 说明 |
+|------|------|
+| `insertAdMode` | `0`=不插文中广告；`2`=智能插入 |
+| `openCommentAd` / `openKeywordAd` | 留言区 / 关键词广告（默认多为 `true`） |
+| `categoriesList` | 文中广告类目 ID 字符串数组（`insertAdMode=2` 时有效；非法 ID 会被滤掉） |
+
+payload 示例（声明原创 + 手动作者 + 创作来源）：
+
+```json
+{
+  "accountId": "acc_xxx",
+  "manuscriptIds": ["ms_1", "ms_2"],
+  "contentMode": "article",
+  "originalityConfig": {
+    "declareOriginal": true,
+    "useAccountName": false,
+    "manualAuthor": "张三",
+    "allowFastReprint": true
+  },
+  "claimSourceConfig": { "claimSourceType": 0 },
+  "commentConfig": {
+    "needOpenComment": true,
+    "onlyFansCanComment": false,
+    "onlyFansDaysCanComment": false,
+    "autoElectComment": false
+  },
+  "rewardConfig": { "enabled": false },
+  "start": true
+}
+```
+
+```bash
+haoxu draft-tasks create --payload-file /abs/draft.json --json
+# 或与 flags 混用（payload 覆盖同名键）：
+haoxu draft-tasks create --account acc_xxx --manuscripts ms_1 --payload-file /abs/draft.json --start --json
+```
 
 员工仅可操作**可见账号**下任务；不可见 → `404 NOT_FOUND`。账号离线/非公众号不可存稿 → `503 ACCOUNT_NOT_READY`。
 
@@ -561,14 +662,16 @@ haoxu publish-tasks list --status scheduled --json
 | `haoxu_move_account_group` | `id`；`groupId` 或 `ungrouped` |
 | `haoxu_set_account_tags` | `id`；`tagIds: string[]`（全量替换，可空） |
 | `haoxu_*_delete_*` / `haoxu_delete_*` | 须 `confirm: true` |
-| `haoxu_bind_accounts_proxy` | `accountIds`；`mode`: direct\|managed\|custom；managed 须 `ipProxyId` |
-| `haoxu_set_manuscript_cover` | `id`；`source`: local\|url\|clear；local 须 `filePath` 绝对路径 |
-| `haoxu_create_batch_draft_task` | 对齐存稿 create body；可选 `contentMode`: article\|note（默认 article；贴图用 note）；可选 `start: true` |
-| `haoxu_create_publish_tasks_from_batch_draft` | `batchDraftTaskIds`；可选 `schedule`、`start` |
+| `haoxu_bind_accounts_proxy` | `accountIds`；`payload`: `{ mode:"direct" }` 或 `{ mode:"managed", ipProxyId, identityReuse? }` 或 `{ mode:"custom", ipProxy:{ host, port, type, ... } }`（勿用顶层 `mode` 代替 `payload`） |
+| `haoxu_set_manuscript_cover` | `manuscriptId`；`source`: local\|url\|clear；local 须 `filePath` 绝对路径；url 须 `url` |
+| `haoxu_set_manuscript_source_url` | `manuscriptId`；`source`: url\|clear；url 时须 `url` |
+| `haoxu_create_batch_draft_task` | **完整对齐**上文「存稿 create body」；必填 `accountId`+`manuscriptIds`；原创/作者用 `originalityConfig`（**禁止**顶层 `author`/`isOriginal`）；可选 `start: true`。省略 `originalityConfig`→**未声明原创** |
+| `haoxu_create_publish_tasks_from_batch_draft` | `batchDraftTaskIds`；可选 `schedule: { dateLabel, hour, minute }`、`start` |
 | `haoxu_create_publish_tasks_from_drafts` | `drafts: [{ accountId, platformDraftId, draftTitle }]`；可选 `schedule`、`start`（默认只建） |
 | `haoxu_create_publish_tasks_from_first_drafts` | `accountIds`；`draftType`: article\|sticker（**自动开跑**） |
+| `haoxu_create_ip_proxy` / `haoxu_update_ip_proxy` | 字段同 CLI create/update（`host`/`port`/`type` 等）；未知键拒绝 |
 | `haoxu_sync_mp_draft` | `accountId`；`draftId`；`targetAccountIds`；可选 `uploadToMaterial` |
-| `haoxu_update_mp_published_private` | `accountId`；`items: [{ appmsgid, itemidx, privateType }]` |
+| `haoxu_update_mp_published_private` | `accountId`；`items: [{ appmsgid, itemidx, privateType }]`（`privateType`：1=仅自己可见，0=取消） |
 | `haoxu_upload_mp_image` | `accountId`；`filePath` 绝对路径 |
 | `haoxu_delete_mp_images` | `accountId`；`imageIds`；`groupIds`；`confirm: true` |
 
