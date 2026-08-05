@@ -1,11 +1,11 @@
 ---
 name: haoxu-agent
-description: 通过 haoxu CLI 查询号续账号、稿件、存稿任务、发表任务、分组/标签/代理 IP/稿件分类/员工，支持公众号远端草稿箱与发表记录查询，以及账号元数据写操作（号主/备注、移组、设标签、分组/标签 CRUD）、代理写操作（代理库 CRUD/绑定/检测/Excel 导入、异步 Job）、统计刷新/账号检测/未读刷新（0.6.0）、稿件路径/链接导入（0.7.0）、存稿/发表写操作（0.8.0；存稿 create 支持 originalityConfig 作者/原创等全量配置）、单篇稿件设封面（0.9.0）、公众号面板远端写（1.0.0）、远端草稿箱发表 from-drafts / from-first-drafts（1.1.0）与单篇设原文链接（1.2.0）及单篇插入配图（1.3.0）、导出账号 Cookie（1.4.0，须 cookieExport 权限）。Use when the user asks to query or update HaoXu data, list accounts/manuscripts/draft tasks/publish tasks/groups/tags/ip-proxies/categories/employees, export an account cookie, query WeChat MP drafts/published posts, delete/sync MP drafts, update MP published private, list/upload/delete MP images, patch account owner/remarks, move groups, set tags, manage proxies, bind proxy, test proxy, import proxies, detect account proxy, refresh account metrics, detect account, refresh unread, import manuscripts from paths or links, set manuscript cover, set manuscript source url, insert manuscript images, create/start/cancel/delete draft tasks (including originality/author via originalityConfig), create/start publish tasks from batch draft, create publish tasks from drafts or first drafts, or mentions haoxu CLI / Agent Bridge.
+description: 通过 haoxu CLI 查询号续账号、稿件、存稿任务、发表任务、分组/标签/代理 IP/稿件分类/员工，支持公众号远端草稿箱与发表记录查询，以及账号元数据写操作（号主/备注、移组、设标签、分组/标签 CRUD）、代理写操作（代理库 CRUD/绑定/检测/Excel 导入、异步 Job）、统计刷新/账号检测/未读刷新（0.6.0）、稿件路径/链接导入（0.7.0）、存稿/发表写操作（0.8.0；存稿 create 支持 originalityConfig 作者/原创等全量配置）、单篇稿件设封面（0.9.0）、公众号面板远端写（1.0.0）、远端草稿箱发表 from-drafts / from-first-drafts（1.1.0）与单篇设原文链接（1.2.0）及单篇插入配图（1.3.0）、导出账号 Cookie（1.4.0，须 cookieExport 权限）、Cookie 导入添加账号（1.5.0）。Use when the user asks to query or update HaoXu data, list accounts/manuscripts/draft tasks/publish tasks/groups/tags/ip-proxies/categories/employees, export an account cookie, query WeChat MP drafts/published posts, delete/sync MP drafts, update MP published private, list/upload/delete MP images, patch account owner/remarks, move groups, set tags, manage proxies, bind proxy, test proxy, import proxies, detect account proxy, refresh account metrics, detect account, refresh unread, import manuscripts from paths or links, set manuscript cover, set manuscript source url, insert manuscript images, create/start/cancel/delete draft tasks (including originality/author via originalityConfig), create/start publish tasks from batch draft, create publish tasks from drafts or first drafts, import an account from a cookie, add an account via cookie import, or mentions haoxu CLI / Agent Bridge.
 ---
 
 # 号续 Agent（查询 + 账号元数据写 + 代理写 + 统计刷新）
 
-用 Shell 执行全局命令 `haoxu`，经本机 Agent Bridge 查询或更新号续数据。**0.4.0** 起允许账号元数据与分组/标签写操作；**0.5.0** 起允许代理库写、账号绑定代理、**代理检测**与 Excel 导入（异步 Job）；**0.6.0** 起允许统计刷新、**账号检测**（非代理检测）与未读刷新；**0.7.0** 起允许本机路径（含 zip）与公众号链接导入稿件；**0.8.0** 起允许存稿 create/start/cancel/delete 与发表 from-batch-draft / start / start-batch / start-all-pending；**0.9.0** 起允许单篇稿件设封面（本机路径 / URL / 清除）；**1.0.0** 起允许公众号面板远端写（删草稿、草稿另存、已发表改私密、素材库 list/上传/删图）；**1.1.0** 起允许从远端草稿箱创建发表（`from-drafts` 默认只建、须 `--start` 开跑；`from-first-drafts` 创建后自动开跑）；**1.2.0** 起允许单篇稿件设原文链接（`--url` / `--clear`）；**1.3.0** 起允许单篇稿件插入配图（`position` + `images[]`，本机路径或 URL）；**1.4.0** 起允许单独导出账号 Cookie（`accounts cookie`，须当前登录用户有 `cookieExport` 权限，员工看主账号权限）。**不支持飞书导入**、批量设封面/原文链接/配图 API、删发表任务、发表任务 UPDATE 等。
+用 Shell 执行全局命令 `haoxu`，经本机 Agent Bridge 查询或更新号续数据。**0.4.0** 起允许账号元数据与分组/标签写操作；**0.5.0** 起允许代理库写、账号绑定代理、**代理检测**与 Excel 导入（异步 Job）；**0.6.0** 起允许统计刷新、**账号检测**（非代理检测）与未读刷新；**0.7.0** 起允许本机路径（含 zip）与公众号链接导入稿件；**0.8.0** 起允许存稿 create/start/cancel/delete 与发表 from-batch-draft / start / start-batch / start-all-pending；**0.9.0** 起允许单篇稿件设封面（本机路径 / URL / 清除）；**1.0.0** 起允许公众号面板远端写（删草稿、草稿另存、已发表改私密、素材库 list/上传/删图）；**1.1.0** 起允许从远端草稿箱创建发表（`from-drafts` 默认只建、须 `--start` 开跑；`from-first-drafts` 创建后自动开跑）；**1.2.0** 起允许单篇稿件设原文链接（`--url` / `--clear`）；**1.3.0** 起允许单篇稿件插入配图（`position` + `images[]`，本机路径或 URL）；**1.4.0** 起允许单独导出账号 Cookie（`accounts cookie`，须当前登录用户有 `cookieExport` 权限，员工看主账号权限）；**1.5.0** 起允许 **Cookie 导入添加账号**（`accounts import-cookie`，一次一个，与桌面端「添加账号 → Cookie 导入」同链路）。**不支持飞书导入**、批量设封面/原文链接/配图 API、删发表任务、发表任务 UPDATE、**扫码添加账号**、删账号等。
 
 适用于任何能跑终端的 Agent（Cursor、Claude Code、Codex、WorkBuddy、QoderWork、QClaw、OpenClaw、Trae 等），不限单一产品。
 
@@ -17,9 +17,9 @@ description: 通过 haoxu CLI 查询号续账号、稿件、存稿任务、发�
 |------|------|
 | 号续运行 | 桌面端已启动并保持运行 |
 | Agent Bridge 已开启 | 主账号或子账号均可：设置 → Agent Bridge → 启用，状态为「运行中」（开关与 API Key 本机共用） |
-| 桌面端版本 | 需含对应 Bridge 能力：账号元数据写 **0.4.0**；代理写与 Job **0.5.0**；统计刷新/账号检测/未读 **0.6.0**；稿件路径/链接导入 **0.7.0**；存稿/发表写 **0.8.0**；单篇设封面 **0.9.0**；公众号面板远端写 **1.0.0**；远端草稿箱发表 **1.1.0**；设原文链接 **1.2.0**；插入配图 **1.3.0**；导出账号 Cookie **1.4.0**（与 `@haoxu/cli` / `@haoxu/mcp` 同版本配套） |
+| 桌面端版本 | 需含对应 Bridge 能力：账号元数据写 **0.4.0**；代理写与 Job **0.5.0**；统计刷新/账号检测/未读 **0.6.0**；稿件路径/链接导入 **0.7.0**；存稿/发表写 **0.8.0**；单篇设封面 **0.9.0**；公众号面板远端写 **1.0.0**；远端草稿箱发表 **1.1.0**；设原文链接 **1.2.0**；插入配图 **1.3.0**；导出账号 Cookie **1.4.0**；Cookie 导入添加账号 **1.5.0**（与 `@haoxu/cli` / `@haoxu/mcp` 同版本配套） |
 | API Key | 在号续内生成；用 `haoxu auth set-key` 写入本机 |
-| CLI 可用 | 已安装：`npm i -g @haoxu/cli@1.4.0`（或 `npx @haoxu/cli@1.4.0`） |
+| CLI 可用 | 已安装：`npm i -g @haoxu/cli@1.5.0`（或 `npx @haoxu/cli@1.5.0`） |
 | 本 Skill | 推荐：`npx skills add montisan/skills --skill haoxu-agent -y -g`（见文末「安装本 Skill」） |
 
 首次配置：
@@ -51,6 +51,8 @@ haoxu auth status --json
 
 **允许（读，1.4.0）：** 单独导出账号 Cookie（`accounts cookie <账号ID>`）。**须当前登录用户有 `cookieExport` 权限**（员工账号看**主账号**的权限）；无权限 `403 FORBIDDEN`。Cookie 是敏感凭证：仅在用户明确要求时取，不要写进日志、仓库或发给第三方。
 
+**允许（写，1.5.0）：** **Cookie 导入添加账号**（`accounts import-cookie` / `haoxu_import_account_from_cookie`）。入参：`cookie`（必填）、`groupId`、`owner`、`proxy`（`direct` / `managed` / `custom`，省略即直连）。`wxid` / 名称 / 类型由公众平台侧拉回，**不接受调用方传入**。**一次只能加一个账号，无批量接口**；账号数超限或未开通会员 `403 FORBIDDEN`；号续内正在添加账号（添加账号窗口开着 / 扫码或注册未结束）或已有导入在跑 `409 CONFLICT`（可稍后重试）；Cookie 失效 `401 REMOTE_UNAUTHORIZED`。**不支持扫码添加**。
+
 **允许（写，0.4.0）：** 账号 `owner` / `remark1` / `remark2`、移组、设标签；分组与标签实体 CRUD。
 
 **允许（写，0.5.0）：** 代理库 CRUD / 批量创建 / 移组 / 入库 test；账号绑定代理；无库连通性 test；单账号与批量「**代理检测**」（`proxy-detect`，非账号检测）；Excel 导入（异步 Job）。
@@ -81,6 +83,7 @@ haoxu auth status --json
 
 | 操作 | 主账号 | 员工（可见账号） | 员工（不可见账号） |
 |------|--------|------------------|-------------------|
+| `import-cookie`（Cookie 导入加号） | ✅（须会员且未超账号上限） | ✅（须**指定授权分组**；主账号会员与额度同样生效） | `403 FORBIDDEN` |
 | `PATCH` `owner` / `remark1` / `remark2` | ✅ | ✅（仅这三字段） | `404 NOT_FOUND` |
 | `move-group` | ✅ | `403 FORBIDDEN` | `404` 若不可见，否则 `403` |
 | `set-tags`（账号打标） | ✅（须会员标签额度） | ✅ 可见账号 + 会员额度 | `404` |
@@ -110,7 +113,7 @@ haoxu auth status --json
 ## 安装 CLI
 
 ```bash
-npm install -g @haoxu/cli@1.4.0
+npm install -g @haoxu/cli@1.5.0
 haoxu --help
 ```
 
@@ -146,6 +149,41 @@ haoxu accounts cookie <账号ID> --json
 | 取不到 CK（账号未在号续内登录） | `503 ACCOUNT_NOT_READY` |
 
 无权限时**不要**改用其他命令绕过——账号列表接口本就不返回 cookie；直接告诉用户去号续开通 `cookieExport`。
+
+### Cookie 导入添加账号（1.5.0）
+
+与桌面端「添加账号 → Cookie 导入」同一条链路：注入 Cookie → 校验登录态 → 从公众平台拉回 `wxid` / 名称 / 类型 → 入库并接管登录态延续。**不要自己编 wxid / 名称 / 类型**，这些参数不存在。
+
+```bash
+# 直连（最常用）；长 Cookie 建议写文件，避免 shell 转义踩坑
+haoxu accounts import-cookie --cookie-file ./ck.txt --json
+
+# 指定分组 + 代理库节点
+haoxu accounts import-cookie --cookie-file ./ck.txt \
+  --group <分组ID> --mode managed --ip-proxy-id <代理ID> --json
+
+# 自定义代理（不入代理库，直接嵌到账号上）
+# ./proxy.json: { "host": "1.2.3.4", "port": 1080, "type": "SOCKS5", "username": "u", "password": "p" }
+haoxu accounts import-cookie --cookie-file ./ck.txt --mode custom --payload-file ./proxy.json --json
+```
+
+| 参数 | 说明 |
+|------|------|
+| `--cookie-file` / `--cookie` | **二选一必填**。标准 Cookie 头、JSON、Netscape 等格式自动识别 |
+| `--group` | 分组 ID，或哨兵 `ungrouped`；省略即未分组。**员工账号通常必须指定授权分组** |
+| `--owner` | 号主，可选 |
+| `--mode` | 省略 = 本地直连；`managed` 配 `--ip-proxy-id`；`custom` 配 `--payload-file` |
+
+返回 `{ account, renewTriggered, cloudPush }`：`account` 是入库后的账号（含 `id`、`wxid`、`name`）；`renewTriggered` 为 `true` 表示该号支持切号，已在后台跑首次登录态延续；若返回 `warning`，说明账号已入库但 Cookie 未接管，需在号续内重新登录该账号。
+
+| 情况 | 返回 |
+|------|------|
+| 账号数超限 / 未开通会员 | `403 FORBIDDEN` |
+| 号续内正在添加账号（窗口开着 / 扫码未结束）或已有导入在跑 | `409 CONFLICT`（**稍后重试**，勿并发） |
+| Cookie 无效或已过期 | `401 REMOTE_UNAUTHORIZED` |
+| 分组不存在 | `404 NOT_FOUND` |
+
+**多账号：串行**——一次一个，前一个返回后再发下一个；遇 `409` 等几秒重试，不要并发。导入前可先 `haoxu accounts list --json` 看现有数量，避免撞上限。Cookie 属敏感凭证：用完删掉临时文件，别写进日志或仓库。
 
 ### 新增域（0.2.0）
 
@@ -636,7 +674,7 @@ haoxu publish-tasks list --status scheduled --json
 |------|------|
 | Connection refused / exit 3 | 启动号续并启用 Agent Bridge |
 | 401 / exit 2 | `haoxu auth set-key` 或重新生成 Key |
-| 误以为「只读不可写」 | 看 `haoxu auth status --json`：`readonly` 应为 `false`；并确认桌面端含写能力（≥ 配套 1.4.0 Bridge）。旧桌面端写路由缺失时会 `404 未找到资源` |
+| 误以为「只读不可写」 | 看 `haoxu auth status --json`：`readonly` 应为 `false`；并确认桌面端含写能力（≥ 配套 1.5.0 Bridge）。旧桌面端写路由缺失时会 `404 未找到资源` |
 | 503 APP_NOT_READY | 在号续内完成登录 |
 | 503 ACCOUNT_NOT_READY | 目标账号离线或未登录公众平台 |
 | 401 REMOTE_UNAUTHORIZED | 微信侧 session 失效，在号续内重新登录该账号 |
@@ -644,22 +682,25 @@ haoxu publish-tasks list --status scheduled --json
 | 403 FORBIDDEN（employees / move-group / groups / 代理 delete·move-group） | 需主账号登录 |
 | 403 FORBIDDEN（tags / 代理 update 额度） | 会员额度不足 |
 | 403 FORBIDDEN（`accounts cookie`） | 当前登录用户无 `cookieExport` 权限（员工看主账号权限），请在号续侧开通 |
+| 403 FORBIDDEN（`accounts import-cookie`） | 账号数已达会员上限，或未开通会员；员工须指定授权分组 |
+| 409 CONFLICT（`accounts import-cookie`） | 号续内正在添加账号，或另一条导入未结束；关掉「添加账号」窗口后稍等重试 |
 | 404 NOT_FOUND（mp-* / 不可见账号·代理） | 资源不存在或员工不可见 |
 | 400 VALIDATION_ERROR（delete） | 删除须 `--confirm` / `confirm: true` |
 | 404 NOT_FOUND（jobs） | jobId 不存在、已 TTL 清理，或号续已重启 |
-| `haoxu: command not found` | `npm install -g @haoxu/cli@1.4.0` |
-| 未知命令 / 过滤无效 | 升级桌面端与 CLI 至 1.4.0 |
+| `haoxu: command not found` | `npm install -g @haoxu/cli@1.5.0` |
+| 未知命令 / 过滤无效 | 升级桌面端与 CLI 至 1.5.0 |
 | 路径不可读 / 导入失败 | 确认绝对路径、号续与 Agent 同机、文件扩展名支持 |
 
-## MCP（可选，1.4.0）
+## MCP（可选，1.5.0）
 
-`npx -y @haoxu/mcp@1.4.0`，与 CLI 共用 API Key。
+`npx -y @haoxu/mcp@1.5.0`，与 CLI 共用 API Key。
 
 | 工具 | 说明 |
 |------|------|
 | `haoxu_status` | Bridge 与登录状态 |
 | `haoxu_list_accounts` / `haoxu_get_account` | 账号（含过滤参数）；**不含 cookie** |
 | `haoxu_get_account_cookie` | 单账号 Cookie（1.4.0；须 `cookieExport` 权限，员工看主账号权限） |
+| `haoxu_import_account_from_cookie` | Cookie 导入添加账号（1.5.0；`cookie` + 可选 `groupId` / `owner` / `proxy`） |
 | `haoxu_list_manuscripts` / `haoxu_get_manuscript` | 稿件 |
 | `haoxu_list_draft_tasks` / `haoxu_get_draft_task` | 存稿任务 |
 | `haoxu_list_publish_tasks` / `haoxu_get_publish_task` | 发表任务 |
@@ -736,9 +777,9 @@ MCP 参数名与 HTTP query/body 对齐（如 `quickFilter`、`groupId`、`assig
 
 ```bash
 npx skills add montisan/skills --skill haoxu-agent -y -g
-npm install -g @haoxu/cli@1.4.0
+npm install -g @haoxu/cli@1.5.0
 # 可选 MCP：
-npm install -g @haoxu/mcp@1.4.0
+npm install -g @haoxu/mcp@1.5.0
 ```
 
 装完后请用户：号续 → 设置 → Agent Bridge → 启用 → 生成 Key → `haoxu auth set-key` → `haoxu auth status --json`。然后**重启当前 Agent / 开新对话**。
