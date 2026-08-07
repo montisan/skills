@@ -1,11 +1,11 @@
 ---
 name: haoxu-agent
-description: 通过 haoxu CLI 查询号续账号、稿件、存稿任务、发表任务、分组/标签/代理 IP/稿件分类/员工，支持公众号远端草稿箱与发表记录查询，以及账号元数据写操作（号主/备注、移组、设标签、分组/标签 CRUD）、代理写操作（代理库 CRUD/绑定/检测/Excel 导入、异步 Job）、统计刷新/账号检测/未读刷新（0.6.0）、稿件路径/链接导入（0.7.0）、存稿/发表写操作（0.8.0；存稿 create 支持 originalityConfig 作者/原创等全量配置）、单篇稿件设封面（0.9.0）、公众号面板远端写（1.0.0）、远端草稿箱发表 from-drafts / from-first-drafts（1.1.0）与单篇设原文链接（1.2.0）及单篇插入配图（1.3.0）、导出账号 Cookie（1.4.0，须 cookieExport 权限）、Cookie 导入添加账号（1.5.0）。Use when the user asks to query or update HaoXu data, list accounts/manuscripts/draft tasks/publish tasks/groups/tags/ip-proxies/categories/employees, export an account cookie, query WeChat MP drafts/published posts, delete/sync MP drafts, update MP published private, list/upload/delete MP images, patch account owner/remarks, move groups, set tags, manage proxies, bind proxy, test proxy, import proxies, detect account proxy, refresh account metrics, detect account, refresh unread, import manuscripts from paths or links, set manuscript cover, set manuscript source url, insert manuscript images, create/start/cancel/delete draft tasks (including originality/author via originalityConfig), create/start publish tasks from batch draft, create publish tasks from drafts or first drafts, import an account from a cookie, add an account via cookie import, or mentions haoxu CLI / Agent Bridge.
+description: 通过 haoxu CLI 查询号续账号、稿件、存稿任务、发表任务、分组/标签/代理 IP/稿件分类/员工，支持公众号远端草稿箱与发表记录查询，以及账号元数据写操作（号主/备注、移组、设标签、分组/标签 CRUD）、代理写操作（代理库 CRUD/绑定/检测/Excel 导入、异步 Job）、统计刷新/账号检测/未读刷新（0.6.0）、稿件路径/链接导入（0.7.0）、存稿/发表写操作（0.8.0；存稿 create 支持 originalityConfig 作者/原创等全量配置）、单篇稿件设封面（0.9.0）、公众号面板远端写（1.0.0）、远端草稿箱发表 from-drafts / from-first-drafts（1.1.0）与单篇设原文链接（1.2.0）及单篇插入配图（1.3.0）、导出账号 Cookie（1.4.0，须 cookieExport 权限）、Cookie 导入添加账号（1.5.0）、发表创建接口的 massSendNotify 群发通知开关（1.6.0）。Use when the user asks to query or update HaoXu data, list accounts/manuscripts/draft tasks/publish tasks/groups/tags/ip-proxies/categories/employees, export an account cookie, query WeChat MP drafts/published posts, delete/sync MP drafts, update MP published private, list/upload/delete MP images, patch account owner/remarks, move groups, set tags, manage proxies, bind proxy, test proxy, import proxies, detect account proxy, refresh account metrics, detect account, refresh unread, import manuscripts from paths or links, set manuscript cover, set manuscript source url, insert manuscript images, create/start/cancel/delete draft tasks (including originality/author via originalityConfig), create/start publish tasks from batch draft, create publish tasks from drafts or first drafts, import an account from a cookie, add an account via cookie import, or mentions haoxu CLI / Agent Bridge.
 ---
 
 # 号续 Agent（查询 + 账号元数据写 + 代理写 + 统计刷新）
 
-用 Shell 执行全局命令 `haoxu`，经本机 Agent Bridge 查询或更新号续数据。**0.4.0** 起允许账号元数据与分组/标签写操作；**0.5.0** 起允许代理库写、账号绑定代理、**代理检测**与 Excel 导入（异步 Job）；**0.6.0** 起允许统计刷新、**账号检测**（非代理检测）与未读刷新；**0.7.0** 起允许本机路径（含 zip）与公众号链接导入稿件；**0.8.0** 起允许存稿 create/start/cancel/delete 与发表 from-batch-draft / start / start-batch / start-all-pending；**0.9.0** 起允许单篇稿件设封面（本机路径 / URL / 清除）；**1.0.0** 起允许公众号面板远端写（删草稿、草稿另存、已发表改私密、素材库 list/上传/删图）；**1.1.0** 起允许从远端草稿箱创建发表（`from-drafts` 默认只建、须 `--start` 开跑；`from-first-drafts` 创建后自动开跑）；**1.2.0** 起允许单篇稿件设原文链接（`--url` / `--clear`）；**1.3.0** 起允许单篇稿件插入配图（`position` + `images[]`，本机路径或 URL）；**1.4.0** 起允许单独导出账号 Cookie（`accounts cookie`，须当前登录用户有 `cookieExport` 权限，员工看主账号权限）；**1.5.0** 起允许 **Cookie 导入添加账号**（`accounts import-cookie`，一次一个，与桌面端「添加账号 → Cookie 导入」同链路）。**不支持飞书导入**、批量设封面/原文链接/配图 API、删发表任务、发表任务 UPDATE、**扫码添加账号**、删账号等。
+用 Shell 执行全局命令 `haoxu`，经本机 Agent Bridge 查询或更新号续数据。**0.4.0** 起允许账号元数据与分组/标签写操作；**0.5.0** 起允许代理库写、账号绑定代理、**代理检测**与 Excel 导入（异步 Job）；**0.6.0** 起允许统计刷新、**账号检测**（非代理检测）与未读刷新；**0.7.0** 起允许本机路径（含 zip）与公众号链接导入稿件；**0.8.0** 起允许存稿 create/start/cancel/delete 与发表 from-batch-draft / start / start-batch / start-all-pending；**0.9.0** 起允许单篇稿件设封面（本机路径 / URL / 清除）；**1.0.0** 起允许公众号面板远端写（删草稿、草稿另存、已发表改私密、素材库 list/上传/删图）；**1.1.0** 起允许从远端草稿箱创建发表（`from-drafts` 默认只建、须 `--start` 开跑；`from-first-drafts` 创建后自动开跑）；**1.2.0** 起允许单篇稿件设原文链接（`--url` / `--clear`）；**1.3.0** 起允许单篇稿件插入配图（`position` + `images[]`，本机路径或 URL）；**1.4.0** 起允许单独导出账号 Cookie（`accounts cookie`，须当前登录用户有 `cookieExport` 权限，员工看主账号权限）；**1.5.0** 起允许 **Cookie 导入添加账号**（`accounts import-cookie`，一次一个，与桌面端「添加账号 → Cookie 导入」同链路）；**1.6.0** 起三个发表创建接口支持 `--no-mass-send-notify`（关闭本次发表的群发通知，不传即默认开启）。**不支持飞书导入**、批量设封面/原文链接/配图 API、删发表任务、发表任务 UPDATE、**扫码添加账号**、删账号等。
 
 适用于任何能跑终端的 Agent（Cursor、Claude Code、Codex、WorkBuddy、QoderWork、QClaw、OpenClaw、Trae 等），不限单一产品。
 
@@ -406,18 +406,18 @@ haoxu draft-tasks get <任务ID> --json                # 轮询 status
 
 # 从已完成存稿创建发表（可选定时 + --start）
 haoxu publish-tasks from-batch-draft --tasks d1,d2 \
-  [--schedule-date <label> --schedule-hour <h> --schedule-minute <m>] [--start] --json
+  [--schedule-date <label> --schedule-hour <h> --schedule-minute <m>] [--no-mass-send-notify] [--start] --json
 
 # 从远端草稿箱指定草稿创建发表（1.1.0）
 # drafts 元素：{ accountId, platformDraftId, draftTitle }；--drafts 与 --drafts-file 互斥
 # 默认只建任务；须 --start 才入队执行
-haoxu publish-tasks from-drafts --drafts '[{"accountId":"a1","platformDraftId":"d1","draftTitle":"标题"}]' [--start] --json
+haoxu publish-tasks from-drafts --drafts '[{"accountId":"a1","platformDraftId":"d1","draftTitle":"标题"}]' [--no-mass-send-notify] [--start] --json
 haoxu publish-tasks from-drafts --drafts-file ./drafts.json \
-  [--schedule-date 今天 --schedule-hour 8 --schedule-minute 0] [--start] --json
+  [--schedule-date 今天 --schedule-hour 8 --schedule-minute 0] [--no-mass-send-notify] [--start] --json
 
 # 各账号远端草稿箱「首条」创建发表（1.1.0；创建后自动开跑，无 --start / 无 schedule）
 # --draft-type: article=图文，sticker=贴图（对齐 UI 今日首条）
-haoxu publish-tasks from-first-drafts --accounts a1,a2 --draft-type article --json
+haoxu publish-tasks from-first-drafts --accounts a1,a2 --draft-type article [--no-mass-send-notify] --json
 
 haoxu publish-tasks start <任务ID> --json
 haoxu publish-tasks start-batch --ids p1,p2 --json
@@ -438,6 +438,7 @@ haoxu publish-tasks get <任务ID> --json              # 轮询 status
 | `from-drafts` | `--drafts` \| `--drafts-file` | 互斥；JSON 数组非空；元素：`{ accountId, platformDraftId, draftTitle }` |
 | | schedule 三件套、`--start` | 同 from-batch-draft |
 | `from-first-drafts` | `--accounts` `--draft-type` | 必填；`article` \| `sticker`；**自动开跑**（无 `--start` / 无 schedule） |
+| | `--no-mass-send-notify` | 可选；映射 body `massSendNotify: false`，本次发表不推送订阅通知；不传即默认开启 |
 | `start-batch` | `--ids` | 发表任务 ID 列表 |
 
 #### 存稿 create body（`--payload-file` / MCP `haoxu_create_batch_draft_task`）
@@ -741,9 +742,9 @@ haoxu publish-tasks list --status scheduled --json
 | `haoxu_start_batch_draft_task` | 启动存稿任务 |
 | `haoxu_cancel_batch_draft_task` | 取消存稿任务 |
 | `haoxu_delete_batch_draft_task` | 删除存稿任务（须 `confirm: true`） |
-| `haoxu_create_publish_tasks_from_batch_draft` | 从存稿创建发表（可选 `schedule`、`start`） |
-| `haoxu_create_publish_tasks_from_drafts` | 从远端草稿箱指定草稿创建发表（可选 `schedule`；默认只建，`start=true` 才开跑） |
-| `haoxu_create_publish_tasks_from_first_drafts` | 从各账号首条远端草稿创建发表（创建后自动开跑） |
+| `haoxu_create_publish_tasks_from_batch_draft` | 从存稿创建发表（可选 `schedule`、`massSendNotify`、`start`） |
+| `haoxu_create_publish_tasks_from_drafts` | 从远端草稿箱指定草稿创建发表（可选 `schedule`、`massSendNotify`；默认只建，`start=true` 才开跑） |
+| `haoxu_create_publish_tasks_from_first_drafts` | 从各账号首条远端草稿创建发表（创建后自动开跑；可选 `massSendNotify`） |
 | `haoxu_start_publish_task` | 启动单条发表任务 |
 | `haoxu_start_publish_tasks_batch` | 批量启动发表任务 |
 | `haoxu_start_all_pending_publish_tasks` | 启动全部可见待执行发表任务 |
@@ -760,9 +761,9 @@ haoxu publish-tasks list --status scheduled --json
 | `haoxu_set_manuscript_cover` | `manuscriptId`；`source`: local\|url\|clear；local 须 `filePath` 绝对路径；url 须 `url` |
 | `haoxu_set_manuscript_source_url` | `manuscriptId`；`source`: url\|clear；url 时须 `url` |
 | `haoxu_create_batch_draft_task` | **完整对齐**上文「存稿 create body」；必填 `accountId`+`manuscriptIds`；原创/作者用 `originalityConfig`（**禁止**顶层 `author`/`isOriginal`）；可选 `start: true`。省略 `originalityConfig`→**未声明原创** |
-| `haoxu_create_publish_tasks_from_batch_draft` | `batchDraftTaskIds`；可选 `schedule: { dateLabel, hour, minute }`、`start` |
-| `haoxu_create_publish_tasks_from_drafts` | `drafts: [{ accountId, platformDraftId, draftTitle }]`；可选 `schedule`、`start`（默认只建） |
-| `haoxu_create_publish_tasks_from_first_drafts` | `accountIds`；`draftType`: article\|sticker（**自动开跑**） |
+| `haoxu_create_publish_tasks_from_batch_draft` | `batchDraftTaskIds`；可选 `schedule: { dateLabel, hour, minute }`、`massSendNotify`、`start` |
+| `haoxu_create_publish_tasks_from_drafts` | `drafts: [{ accountId, platformDraftId, draftTitle }]`；可选 `schedule`、`massSendNotify`、`start`（默认只建） |
+| `haoxu_create_publish_tasks_from_first_drafts` | `accountIds`；`draftType`: article\|sticker（**自动开跑**）；可选 `massSendNotify` |
 | `haoxu_create_ip_proxy` / `haoxu_update_ip_proxy` | 字段同 CLI create/update（`host`/`port`/`type` 等）；未知键拒绝 |
 | `haoxu_sync_mp_draft` | `accountId`；`draftId`；`targetAccountIds`；可选 `uploadToMaterial` |
 | `haoxu_update_mp_published_private` | `accountId`；`items: [{ appmsgid, itemidx, privateType }]`（`privateType`：1=仅自己可见，0=取消） |
