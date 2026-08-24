@@ -1,11 +1,11 @@
 ---
 name: haoshu-agent
-description: 通过 haoshu CLI 查询号薯账号、稿件、存稿/发布任务、分组/标签/代理 IP/稿件分类、员工（只读），支持 Cookie 导出与导入加号、账号元数据写、代理写、统计刷新、稿件路径导入、设封面/插配图、存稿/发布写操作。默认 Bridge 端口 19322（与号续 19321 区分）。不支持扫码登录、员工管理、删账号、公众号远端面板等。Use when the user asks to query or update HaoShu data, mentions haoshu CLI / Agent Bridge.
+description: 通过 haoshu CLI 查询号薯账号、稿件、存稿/发布任务、分组/标签/代理 IP/稿件分类、员工（只读），支持 Cookie 导出与导入加号、账号元数据写、代理写、统计刷新、稿件路径导入、设封面/插配图、存稿/发布写操作。默认 Bridge 端口 19323（与号续 19321 区分）。不支持扫码登录、员工管理、删账号、公众号远端面板等。Use when the user asks to query or update HaoShu data, mentions haoshu CLI / Agent Bridge.
 ---
 
 # 号薯 Agent（查询 + 写操作）
 
-用 Shell 执行 `haoshu`，经本机 Agent Bridge（**127.0.0.1:19322**）查询或更新号薯数据。
+用 Shell 执行 `haoshu`，经本机 Agent Bridge（**127.0.0.1:19323**）查询或更新号薯数据。
 
 **Announce at start:** 「我在用 haoshu-agent skill 查询/更新号薯数据。」
 
@@ -16,7 +16,7 @@ description: 通过 haoshu CLI 查询号薯账号、稿件、存稿/发布任务
 | 号薯运行 | 桌面端已启动并保持运行 |
 | Agent Bridge 已开启 | 设置 → Agent Bridge → 启用 |
 | API Key | 号薯内生成；`haoshu auth set-key` 写入 `~/.haoshu/config.json` |
-| CLI | `npm i -g @haoshu/cli@1.6.0` 或 `npx @haoshu/cli@1.6.0` |
+| CLI | `npm i -g @haoshu/cli@1.6.1` 或 `npx @haoshu/cli@1.6.1` |
 
 首次：`haoshu auth status --json`（确认 Bridge 通、已登录、`readonly: false`）。
 
@@ -56,7 +56,7 @@ haoshu accounts refresh-metrics <id> --json
 
 ## MCP（可选）
 
-`npx -y @haoshu/mcp@1.6.0`，与 CLI 共用 API Key；环境变量 `HAOSHU_API_KEY`、`HAOSHU_BASE_URL`（默认 `http://127.0.0.1:19322`）。
+`npx -y @haoshu/mcp@1.6.1`，与 CLI 共用 API Key；环境变量 `HAOSHU_API_KEY`、`HAOSHU_BASE_URL`（默认 `http://127.0.0.1:19323`）。
 
 ## 安装 Skill
 
