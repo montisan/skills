@@ -38,6 +38,10 @@ description: 通过 haoshu CLI 查询号薯账号、稿件、存稿/发布任务
 
 **`--quick-filter` 取值：** `all` / `mainOnline` / `mainOffline` / `creatorOnline` / `creatorOffline` / `needsAttention` / `withIp` / `direct`。主页与创作中心各自独立登录，在线离线因此分两组；旧值 `online` / `offline` 按主页那组解释。
 
+**`--type` 取值：** `all` / `official` / `cn` / `global` / `mini_program`。`official` = 全部小红书号（国内版 + 海外版）；`cn` / `global` 精确到版本；`mini_program` 是历史取值，号薯不再产生。
+
+**海外版账号（`--type global`）三处不同：** ① 创作中心没有数据统计，`refresh-metrics` 回 `ACCOUNT_NOT_READY`，批量刷新算跳过而非失败、默认目标集也不含它；② 主页没有私信接口，`refresh-unread` 可用但只写通知三项，`unread.chatUnreadCount` 恒为 0；③ 创作中心没有长文入口，`draft-tasks create` 只能 `--content-mode note`。Cookie 导入加号时账号版本由 Cookie 条目的 domain 自动判定（纯 `k=v` 头无 domain，按国内版处理）。
+
 ## CLI flags 索引（与 `haoshu --help` 对齐）
 
 `--json` `--page` `--page-size` `--group` `--tag` `--q` `--type` `--quick-filter` `--remark` `--category` `--assigned` `--saved` `--cover` `--paths` `--strip-duplicate-title` `--file` `--url` `--clear` `--position` `--files` `--urls` `--payload-file` `--account` `--manuscripts` `--content-mode` `--image-dedup` `--note-empty-title` `--auto-clear-after-save` `--start` `--draft-task` `--ids` `--status` `--content-type` `--completed` `--confirm` `--owner` `--remark1` `--remark2` `--tags` `--accounts` `--mode` `--ip-proxy-id` `--identity-reuse` `--cookie` `--cookie-file` `--poll` `--force` `--no-force` `--host` `--port` `--include` `--label` `--region` `--username` `--password` `--anonymity` `--latency` `--extract-url` `--exit-ip` `--title` `--content`
