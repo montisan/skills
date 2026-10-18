@@ -1,11 +1,11 @@
 ---
 name: haoxu-agent
-description: 通过 haoxu CLI 查询号续账号、稿件、存稿任务、发表任务、分组/标签/代理 IP/稿件分类/员工，支持公众号远端草稿箱与发表记录查询，以及账号元数据写操作（号主/备注、移组、设标签、分组/标签 CRUD）、代理写操作（代理库 CRUD/绑定/检测/Excel 导入、异步 Job）、统计刷新/账号检测/未读刷新（0.6.0）、稿件路径/链接导入（0.7.0）、存稿/发表写操作（0.8.0；存稿 create 支持 originalityConfig 作者/原创等全量配置）、单篇稿件设封面（0.9.0）、公众号面板远端写（1.0.0）、远端草稿箱发表 from-drafts / from-first-drafts（1.1.0）与单篇设原文链接（1.2.0）及单篇插入配图（1.3.0）、导出账号 Cookie（1.4.0，须 cookieExport 权限）、Cookie 导入添加账号（1.5.0）、发表创建接口的 massSendNotify 群发通知开关（1.6.0）、单篇稿件设摘要（1.7.0）、稿件正文样式/排版读写（1.8.0，单篇或批量设字号、行间距、字间距、对齐、缩进、段间距）、导入稿件时剔除图片 AI 元信息（1.9.0，import-paths 的 --strip-image-metadata）。Use when the user asks to query or update HaoXu data, list accounts/manuscripts/draft tasks/publish tasks/groups/tags/ip-proxies/categories/employees, export an account cookie, query WeChat MP drafts/published posts, delete/sync MP drafts, update MP published private, list/upload/delete MP images, patch account owner/remarks, move groups, set tags, manage proxies, bind proxy, test proxy, import proxies, detect account proxy, refresh account metrics, detect account, refresh unread, import manuscripts from paths or links (optionally stripping the duplicate first-line title or image AI metadata), set manuscript cover, set manuscript source url, set manuscript summary, read or set manuscript article typography (font size, line height, letter spacing, alignment, indent, paragraph spacing) for one or many manuscripts, insert manuscript images, create/start/cancel/delete draft tasks (including originality/author via originalityConfig), create/start publish tasks from batch draft, create publish tasks from drafts or first drafts, import an account from a cookie, add an account via cookie import, or mentions haoxu CLI / Agent Bridge.
+description: 通过 haoxu CLI 查询号续账号、稿件、存稿任务、发表任务、分组/标签/代理 IP/稿件分类/员工，支持公众号远端草稿箱与发表记录查询，以及账号元数据写操作（号主/备注、移组、设标签、分组/标签 CRUD）、代理写操作（代理库 CRUD/绑定/检测/Excel 导入、异步 Job）、统计刷新/账号检测/未读刷新（0.6.0）、稿件路径/链接导入（0.7.0）、存稿/发表写操作（0.8.0；存稿 create 支持 originalityConfig 作者/原创等全量配置）、单篇稿件设封面（0.9.0）、公众号面板远端写（1.0.0）、远端草稿箱发表 from-drafts / from-first-drafts（1.1.0）与单篇设原文链接（1.2.0）及单篇插入配图（1.3.0）、导出账号 Cookie（1.4.0，须 cookieExport 权限）、Cookie 导入添加账号（1.5.0）、发表创建接口的 massSendNotify 群发通知开关（1.6.0）、单篇稿件设摘要（1.7.0）、稿件正文样式/排版读写（1.8.0，单篇或批量设字号、行间距、字间距、对齐、缩进、段间距）、导入稿件时剔除图片 AI 元信息（1.9.0，import-paths 的 --strip-image-metadata）、从正文图片中选一张设封面（1.10.0，body-images 与 set-cover --body-image）、导出比特浏览器 JSON 格式 Cookie（1.11.0，accounts cookie --format json）、删除本地稿件（1.12.0，manuscripts delete / haoxu_delete_manuscripts，须 confirm）。Use when the user asks to query or update HaoXu data, list accounts/manuscripts/draft tasks/publish tasks/groups/tags/ip-proxies/categories/employees, export an account cookie (as a header string or BitBrowser-importable JSON), query WeChat MP drafts/published posts, delete/sync MP drafts, update MP published private, list/upload/delete MP images, patch account owner/remarks, move groups, set tags, manage proxies, bind proxy, test proxy, import proxies, detect account proxy, refresh account metrics, detect account, refresh unread, import manuscripts from paths or links (optionally stripping the duplicate first-line title or image AI metadata), set manuscript cover (from a local file, URL, or an image already in the manuscript body), list manuscript body images, set manuscript source url, set manuscript summary, read or set manuscript article typography (font size, line height, letter spacing, alignment, indent, paragraph spacing) for one or many manuscripts, insert manuscript images, create/start/cancel/delete draft tasks (including originality/author via originalityConfig), create/start publish tasks from batch draft, create publish tasks from drafts or first drafts, import an account from a cookie, add an account via cookie import, or mentions haoxu CLI / Agent Bridge.
 ---
 
 # 号续 Agent（查询 + 账号元数据写 + 代理写 + 统计刷新）
 
-用 Shell 执行全局命令 `haoxu`，经本机 Agent Bridge 查询或更新号续数据。**0.4.0** 起允许账号元数据与分组/标签写操作；**0.5.0** 起允许代理库写、账号绑定代理、**代理检测**与 Excel 导入（异步 Job）；**0.6.0** 起允许统计刷新、**账号检测**（非代理检测）与未读刷新；**0.7.0** 起允许本机路径（含 zip）与公众号链接导入稿件；**0.8.0** 起允许存稿 create/start/cancel/delete 与发表 from-batch-draft / start / start-batch / start-all-pending；**0.9.0** 起允许单篇稿件设封面（本机路径 / URL / 清除）；**1.0.0** 起允许公众号面板远端写（删草稿、草稿另存、已发表改私密、素材库 list/上传/删图）；**1.1.0** 起允许从远端草稿箱创建发表（`from-drafts` 默认只建、须 `--start` 开跑；`from-first-drafts` 创建后自动开跑）；**1.2.0** 起允许单篇稿件设原文链接（`--url` / `--clear`）；**1.3.0** 起允许单篇稿件插入配图（`position` + `images[]`，本机路径或 URL）；**1.4.0** 起允许单独导出账号 Cookie（`accounts cookie`，须当前登录用户有 `cookieExport` 权限，员工看主账号权限）；**1.5.0** 起允许 **Cookie 导入添加账号**（`accounts import-cookie`，一次一个，与桌面端「添加账号 → Cookie 导入」同链路）；**1.6.0** 起三个发表创建接口支持 `--no-mass-send-notify`（关闭本次发表的群发通知，不传即默认开启）；**1.7.0** 起允许单篇稿件设摘要（`--text` / `--clear`）及 list `--summary` 筛选；**1.8.0** 起允许读写稿件正文样式（`manuscripts typography` / `set-typography`，单篇或 `--ids` 批量，对齐 UI 预览工具条与「设置样式」弹窗）；**1.9.0** 起 `manuscripts import-paths` 支持 `--strip-image-metadata`（导入时剔除正文图片的 EXIF / XMP / IPTC / C2PA 等 AI 元信息，对齐导入弹窗同名开关）；**1.9.1** 修复**定时发表**：`schedule` 的 `hour` / `minute` 单位数会自动补零（如 `8`/`0` → `08`/`00`），日期或时刻不合法时返回带原因的 `400` 而非「服务器内部错误」。**不支持飞书导入**、批量设封面/原文链接/摘要/配图 API、删发表任务、发表任务 UPDATE、**扫码添加账号**、删账号等。
+用 Shell 执行全局命令 `haoxu`，经本机 Agent Bridge 查询或更新号续数据。**0.4.0** 起允许账号元数据与分组/标签写操作；**0.5.0** 起允许代理库写、账号绑定代理、**代理检测**与 Excel 导入（异步 Job）；**0.6.0** 起允许统计刷新、**账号检测**（非代理检测）与未读刷新；**0.7.0** 起允许本机路径（含 zip）与公众号链接导入稿件；**0.8.0** 起允许存稿 create/start/cancel/delete 与发表 from-batch-draft / start / start-batch / start-all-pending；**0.9.0** 起允许单篇稿件设封面（本机路径 / URL / 清除）；**1.0.0** 起允许公众号面板远端写（删草稿、草稿另存、已发表改私密、素材库 list/上传/删图）；**1.1.0** 起允许从远端草稿箱创建发表（`from-drafts` 默认只建、须 `--start` 开跑；`from-first-drafts` 创建后自动开跑）；**1.2.0** 起允许单篇稿件设原文链接（`--url` / `--clear`）；**1.3.0** 起允许单篇稿件插入配图（`position` + `images[]`，本机路径或 URL）；**1.4.0** 起允许单独导出账号 Cookie（`accounts cookie`，须当前登录用户有 `cookieExport` 权限，员工看主账号权限）；**1.5.0** 起允许 **Cookie 导入添加账号**（`accounts import-cookie`，一次一个，与桌面端「添加账号 → Cookie 导入」同链路）；**1.6.0** 起三个发表创建接口支持 `--no-mass-send-notify`（关闭本次发表的群发通知，不传即默认开启）；**1.7.0** 起允许单篇稿件设摘要（`--text` / `--clear`）及 list `--summary` 筛选；**1.8.0** 起允许读写稿件正文样式（`manuscripts typography` / `set-typography`，单篇或 `--ids` 批量，对齐 UI 预览工具条与「设置样式」弹窗）；**1.9.0** 起 `manuscripts import-paths` 支持 `--strip-image-metadata`（导入时剔除正文图片的 EXIF / XMP / IPTC / C2PA 等 AI 元信息，对齐导入弹窗同名开关）；**1.9.1** 修复**定时发表**：`schedule` 的 `hour` / `minute` 单位数会自动补零（如 `8`/`0` → `08`/`00`），日期或时刻不合法时返回带原因的 `400` 而非「服务器内部错误」；**1.10.0** 起允许**从正文图片设封面**（`manuscripts body-images` 列出正文图片，`set-cover --body-image <n>` 选第 n 张，对齐 UI「设置封面」弹窗的「从正文选择」）；**1.11.0** 起 `accounts cookie` 支持 `--format json`（输出比特浏览器可导入的 JSON 数组，对齐桌面端「导出 CK(JSON)」）。**1.12.0** 起允许删除本地稿件（`manuscripts delete` / `haoxu_delete_manuscripts`，须 `--confirm`；未完成存稿明细标为「稿件已删除」）。**不支持飞书导入**、批量设封面/原文链接/摘要/配图 API、删发表任务、发表任务 UPDATE、**扫码添加账号**、删账号等。
 
 适用于任何能跑终端的 Agent（Cursor、Claude Code、Codex、WorkBuddy、QoderWork、QClaw、OpenClaw、Trae 等），不限单一产品。
 
@@ -17,9 +17,9 @@ description: 通过 haoxu CLI 查询号续账号、稿件、存稿任务、发�
 |------|------|
 | 号续运行 | 桌面端已启动并保持运行 |
 | Agent Bridge 已开启 | 主账号或子账号均可：设置 → Agent Bridge → 启用，状态为「运行中」（开关与 API Key 本机共用） |
-| 桌面端版本 | 需含对应 Bridge 能力：账号元数据写 **0.4.0**；代理写与 Job **0.5.0**；统计刷新/账号检测/未读 **0.6.0**；稿件路径/链接导入 **0.7.0**；存稿/发表写 **0.8.0**；单篇设封面 **0.9.0**；公众号面板远端写 **1.0.0**；远端草稿箱发表 **1.1.0**；设原文链接 **1.2.0**；插入配图 **1.3.0**；导出账号 Cookie **1.4.0**；Cookie 导入添加账号 **1.5.0**；设摘要 **1.7.0**；稿件正文样式读写 **1.8.0**；导入剔除图片 AI 元信息 **1.8.0**（Bridge 侧早有，CLI/MCP 自 **1.9.0** 起才暴露该 flag）（与 `@haoxu/cli` / `@haoxu/mcp` 同版本配套） |
+| 桌面端版本 | 需含对应 Bridge 能力：账号元数据写 **0.4.0**；代理写与 Job **0.5.0**；统计刷新/账号检测/未读 **0.6.0**；稿件路径/链接导入 **0.7.0**；存稿/发表写 **0.8.0**；单篇设封面 **0.9.0**；公众号面板远端写 **1.0.0**；远端草稿箱发表 **1.1.0**；设原文链接 **1.2.0**；插入配图 **1.3.0**；导出账号 Cookie **1.4.0**；Cookie 导入添加账号 **1.5.0**；设摘要 **1.7.0**；稿件正文样式读写 **1.8.0**；导入剔除图片 AI 元信息 **1.8.0**（Bridge 侧早有，CLI/MCP 自 **1.9.0** 起才暴露该 flag）；正文图片设封面 **1.10.0**（与 `@haoxu/cli` / `@haoxu/mcp` 同版本配套）；Cookie JSON 导出只需 **1.4.0**（转换在 CLI/MCP 侧完成，但需 `@haoxu/cli` / `@haoxu/mcp` **1.11.0**）；删除本地稿件 **1.12.0** |
 | API Key | 在号续内生成；用 `haoxu auth set-key` 写入本机 |
-| CLI 可用 | 已安装：`npm i -g @haoxu/cli@1.9.1`（或 `npx @haoxu/cli@1.9.1`） |
+| CLI 可用 | 已安装：`npm i -g @haoxu/cli@1.12.0`（或 `npx @haoxu/cli@1.12.0`） |
 | 本 Skill | 推荐：`npx skills add montisan/skills --skill haoxu-agent -y -g`（见文末「安装本 Skill」） |
 
 首次配置：
@@ -49,7 +49,7 @@ haoxu auth status --json
 
 **允许（读）：** 查询账号与统计、稿件、存稿任务、发表任务、分组、标签、代理 IP、稿件分类、员工（主账号）、**公众号远端草稿箱与发表记录**。账号查询结果**不含 cookie**。
 
-**允许（读，1.4.0）：** 单独导出账号 Cookie（`accounts cookie <账号ID>`）。**须当前登录用户有 `cookieExport` 权限**（员工账号看**主账号**的权限）；无权限 `403 FORBIDDEN`。Cookie 是敏感凭证：仅在用户明确要求时取，不要写进日志、仓库或发给第三方。
+**允许（读，1.4.0）：** 单独导出账号 Cookie（`accounts cookie <账号ID>`；**1.11.0** 起 `--format json` 输出比特浏览器可导入的 JSON 数组）。**须当前登录用户有 `cookieExport` 权限**（员工账号看**主账号**的权限）；无权限 `403 FORBIDDEN`。Cookie 是敏感凭证：仅在用户明确要求时取，不要写进日志、仓库或发给第三方。
 
 **允许（写，1.5.0）：** **Cookie 导入添加账号**（`accounts import-cookie` / `haoxu_import_account_from_cookie`）。入参：`cookie`（必填）、`groupId`、`owner`、`proxy`（`direct` / `managed` / `custom`，省略即直连）。`wxid` / 名称 / 类型由公众平台侧拉回，**不接受调用方传入**。**一次只能加一个账号，无批量接口**；账号数超限或未开通会员 `403 FORBIDDEN`；号续内正在添加账号（添加账号窗口开着 / 扫码或注册未结束）或已有导入在跑 `409 CONFLICT`（可稍后重试）；Cookie 失效 `401 REMOTE_UNAUTHORIZED`。**不支持扫码添加**。
 
@@ -61,9 +61,13 @@ haoxu auth status --json
 
 **允许（写，0.7.0）：** 本机**绝对路径**（含 zip/docx/html/md/txt 等）与**公众号文章链接**导入稿件（同步返回 `{ imported, errors }`）。号续与 Agent **须同机**，路径须号续进程可读；Bridge 不弹文件对话框。**不支持飞书**、base64 上传或分类 CRUD。
 
+**允许（写，1.12.0）：** 删除本地稿件库中的稿件（`manuscripts delete` / `haoxu_delete_manuscripts`，须 `--confirm`）。与桌面端同一条链路：删除稿件行和素材目录；若稿件还挂在未完成（`pending` / `running`）的存稿任务上，对应任务明细标为「稿件已删除」。单篇不存在 → `404`；批量返回 `{ deleted, missing }`，不存在的 ID 进 `missing`，其余照常删除。
+
 **允许（写，0.8.0）：** 存稿任务 create/start/cancel/delete（create 可选 `--content-mode article|note`、`--start`；**默认 article 图文**；贴图用 `note`；**作者/原创/留言/赞赏/广告/创作来源等与 UI 同级配置须 `--payload-file` / MCP body 的 `originalityConfig` 等字段**，禁止顶层 `author`/`isOriginal`）；发表任务 from-batch-draft create、单条 start、start-batch、start-all-pending（create 可选定时 `schedule` 与 `--start`）。启动后**无 Job**，须轮询 `draft-tasks get` / `publish-tasks get` 查看 `status` 直至终态。
 
 **允许（写，0.9.0）：** 单篇稿件设封面（`--file` 本机绝对路径 / `--url` HTTP(S) / `--clear` 清除；三选一互斥）。`--file` 须号续与 Agent **同机**可读；成功返回 `{ coverUrl: string | null }`。批量设封面由 Agent 循环调用，无专用批量 API。
+
+**允许（写，1.10.0）：** 从正文图片设封面——先 `manuscripts body-images <id>` 列出正文里可作封面的图片（按出现顺序去重，`index` 从 1 起），再 `set-cover <id> --body-image <n>`。本地素材图会复制一份作封面（正文原图不动），网络图片直接作封面 URL。
 
 **允许（写，1.2.0）：** 单篇稿件设原文链接（`--url` HTTP(S) / `--clear` 清除；二选一互斥）。成功返回 `{ sourceUrl: string | null }`。链接导入**不**自动填原文链接。批量由 Agent 循环调用，无专用批量 API。
 
@@ -79,7 +83,7 @@ haoxu auth status --json
 
 **禁止（不在范围）：** 飞书导入、删发表任务、发表任务 UPDATE、员工增删改、账号增删、批量设封面/配图 API 等。
 
-**删除须确认：** 删除分组/标签/代理节点/存稿任务/远端草稿/素材图必须 `--confirm`（CLI）或 `confirm: true`（MCP），否则 `400 VALIDATION_ERROR`。
+**删除须确认：** 删除分组/标签/代理节点/存稿任务/本地稿件/远端草稿/素材图必须 `--confirm`（CLI）或 `confirm: true`（MCP），否则 `400 VALIDATION_ERROR`。
 
 **异步 Job：** Excel 导入、批量代理检测、批量统计刷新/账号检测/未读刷新返回 `jobId`；用 `haoxu jobs get <id>` 轮询。Job 存于号续进程内存，完成后约 **1 小时** TTL 自动清理；**号续退出或重启后 Job 不可恢复**（旧 jobId → 404）。
 
@@ -110,16 +114,18 @@ haoxu auth status --json
 | Excel import | ✅ | ✅（同 IPC 导入权限） |
 | 统计刷新 / 账号 detect / 未读 | ✅ | ✅ 可见账号 | 不可见 → `404` |
 | import-paths / import-links | ✅ | ✅（对齐 IPC：会话 owner = userId） | — |
+| body-images | ✅ | ✅（只读） | — |
 | set-cover | ✅ | ✅（对齐稿件导入：会话 owner = userId） | — |
 | set-source-url | ✅ | ✅（对齐 set-cover） | — |
 | set-summary | ✅ | ✅（对齐 set-cover） | — |
+| delete manuscripts | ✅ | ✅（对齐 set-cover） | — |
 | typography / set-typography | ✅ | ✅（对齐 set-cover） | — |
 | insert-images | ✅ | ✅（对齐 set-cover） | — |
 
 ## 安装 CLI
 
 ```bash
-npm install -g @haoxu/cli@1.9.1
+npm install -g @haoxu/cli@1.12.0
 haoxu --help
 ```
 
@@ -145,7 +151,11 @@ haoxu publish-tasks get <任务ID> --json
 
 ```bash
 haoxu accounts cookie <账号ID> --json
+haoxu accounts cookie <账号ID> --format json > cookie.json
+# → [{ "name": "slave_sid", "value": "...", "domain": "mp.weixin.qq.com", "path": "/" }, ...]
 ```
+
+**1.11.0** 起 `--format json` 输出比特浏览器等指纹浏览器可直接导入的 JSON 数组（与桌面端「导出 CK(JSON)」同格式；库里只存 Cookie 头，`domain` 统一为 `mp.weixin.qq.com`、`path` 为 `/`），重定向到文件即可导入；此时忽略 `--json`。
 
 | 情况 | 返回 |
 |------|------|
@@ -350,20 +360,33 @@ haoxu manuscripts import-links --urls https://mp.weixin.qq.com/s/xxx,https://mp.
 
 同步返回 `{ imported, errors }`；部分失败仍 exit 0。不做分类 CRUD。md front-matter 可带 `title` / `summary`。
 
+### 删除本地稿件（1.12.0）
+
+删除号续本地稿件库中的稿件（路径导入、链接导入都算），并删除对应素材目录。须 `--confirm`。单篇用位置参数，多篇用 `--ids`（二者互斥）。与桌面端一致：未完成存稿任务里的对应明细会标为「稿件已删除」。单篇不存在返回 `404`；批量返回 `{ deleted, missing }`。
+
+```bash
+haoxu manuscripts delete <稿件ID> --confirm --json
+haoxu manuscripts delete --ids m1,m2 --confirm --json
+```
+
 | Flag | 说明 |
 |------|------|
 | `--paths` / `--urls` | 必填（二选一命令）；逗号分隔 |
 | `--category` | 可选分类 ID |
 | `--strip-duplicate-title` | 仅 import-paths；剔除与标题重复的正文首行 |
-| `--strip-image-metadata` | 仅 import-paths（1.9.0）；按容器结构删图片 EXIF / XMP / IPTC / C2PA，压缩数据不重编码；JPEG 保留显示方向 |
+| `--strip-image-metadata` | import-paths（1.9.0；set-cover 另见下节）；按容器结构删图片 EXIF / XMP / IPTC / C2PA，压缩数据不重编码；JPEG 保留显示方向 |
 
-### 单篇稿件设封面（0.9.0）
+### 单篇稿件设封面（0.9.0；正文图片 1.10.0）
 
-`--file` / `--url` / `--clear` **三选一互斥**；`--file` 须绝对路径且同机可读。成功 `{ coverUrl: string | null }`（clear 时为 `null`）。无批量 API，循环调用即可。
+`--file` / `--url` / `--body-image` / `--clear` **四选一互斥**；`--file` 须绝对路径且同机可读。成功 `{ coverUrl: string | null }`（clear 时为 `null`）。无批量 API，循环调用即可。
+
+`--body-image <n>`（1.10.0）取正文第 n 张图片（1 起），序号以 `body-images` 输出为准：返回 `{ images: [{ index, kind, src }] }`，`kind` 为 `local`（稿件本地素材，会复制为封面）或 `url`（网络图片，直接作封面 URL）。正文没有图片或 n 越界时返回 `400`。`--strip-image-metadata`（1.10.0）对 `--file` / 本地素材类 `--body-image` 生效，剔除封面图片的 EXIF / XMP / IPTC / C2PA。
 
 ```bash
 haoxu manuscripts set-cover <稿件ID> --file /abs/cover.jpg --json
 haoxu manuscripts set-cover <稿件ID> --url https://example.com/cover.png --json
+haoxu manuscripts body-images <稿件ID> --json
+haoxu manuscripts set-cover <稿件ID> --body-image 2 --json
 haoxu manuscripts set-cover <稿件ID> --clear --json
 ```
 
@@ -713,7 +736,7 @@ haoxu publish-tasks list --status scheduled --json
 
 ## Cookie 导出权限（1.4.0）
 
-- `accounts cookie` 须当前登录用户的 `cookieExport` 权限（与桌面端「复制 CK / 下载 CK」同一套规则）
+- `accounts cookie` 须当前登录用户的 `cookieExport` 权限（与桌面端「复制 CK / 下载 CK / 导出 CK(JSON)」同一套规则）
 - **员工子账号**：自身没有时回落看**主账号**的权限；主账号也没有 → `403 FORBIDDEN`
 - 员工仍只能取**可见分组内**账号的 CK，其余 `404 NOT_FOUND`
 - 其它接口（`accounts list|get` 等）**始终不返回 cookie**，无权限时无从绕过
@@ -747,19 +770,19 @@ haoxu publish-tasks list --status scheduled --json
 | 404 NOT_FOUND（mp-* / 不可见账号·代理） | 资源不存在或员工不可见 |
 | 400 VALIDATION_ERROR（delete） | 删除须 `--confirm` / `confirm: true` |
 | 404 NOT_FOUND（jobs） | jobId 不存在、已 TTL 清理，或号续已重启 |
-| `haoxu: command not found` | `npm install -g @haoxu/cli@1.9.1` |
-| 未知命令 / 过滤无效 | 升级桌面端与 CLI 至 1.9.1 |
+| `haoxu: command not found` | `npm install -g @haoxu/cli@1.12.0` |
+| 未知命令 / 过滤无效 | 升级桌面端与 CLI 至 1.12.0 |
 | 路径不可读 / 导入失败 | 确认绝对路径、号续与 Agent 同机、文件扩展名支持 |
 
-## MCP（可选，1.9.1）
+## MCP（可选，1.12.0）
 
-`npx -y @haoxu/mcp@1.9.1`，与 CLI 共用 API Key。
+`npx -y @haoxu/mcp@1.12.0`，与 CLI 共用 API Key。
 
 | 工具 | 说明 |
 |------|------|
 | `haoxu_status` | Bridge 与登录状态 |
 | `haoxu_list_accounts` / `haoxu_get_account` | 账号（含过滤参数）；**不含 cookie** |
-| `haoxu_get_account_cookie` | 单账号 Cookie（1.4.0；须 `cookieExport` 权限，员工看主账号权限） |
+| `haoxu_get_account_cookie` | 单账号 Cookie（1.4.0；须 `cookieExport` 权限，员工看主账号权限；1.11.0 起 `format: "json"` 返回比特浏览器可导入的 `{ cookies: [...] }`） |
 | `haoxu_import_account_from_cookie` | Cookie 导入添加账号（1.5.0；`cookie` + 可选 `groupId` / `owner` / `proxy`） |
 | `haoxu_list_manuscripts` / `haoxu_get_manuscript` | 稿件 |
 | `haoxu_list_draft_tasks` / `haoxu_get_draft_task` | 存稿任务 |
@@ -795,9 +818,11 @@ haoxu publish-tasks list --status scheduled --json
 | `haoxu_get_job` | 查询异步 Job 状态 |
 | `haoxu_import_manuscripts_from_paths` | 本机绝对路径导入稿件（同步 `{ imported, errors }`；可选 `stripDuplicateTitleEnabled` / `stripImageMetadataEnabled`） |
 | `haoxu_import_manuscripts_from_links` | 公众号链接导入稿件（同步 `{ imported, errors }`） |
-| `haoxu_set_manuscript_cover` | 单篇设封面（`source`: local/url/clear；local 时 `filePath` 须本机绝对路径、同机可读） |
+| `haoxu_list_manuscript_body_images` | 列出单篇正文中可作封面的图片（`{ images: [{ index, kind, src }] }`，index 从 1 起） |
+| `haoxu_set_manuscript_cover` | 单篇设封面（`source`: local/url/body/clear；local 时 `filePath` 须本机绝对路径、同机可读；body 时 `bodyImageIndex` 为正文第 n 张图） |
 | `haoxu_set_manuscript_source_url` | 单篇设原文链接（`source`: url/clear；url 时须 `url`） |
 | `haoxu_set_manuscript_summary` | 单篇设摘要（`source`: text/clear；text 时须 `text`；list 支持 `summary` 筛选） |
+| `haoxu_delete_manuscripts` | 删除本地稿件（`manuscriptIds` + `confirm: true`；未完成存稿明细标为「稿件已删除」；返回 `{ deleted, missing }`） |
 | `haoxu_insert_manuscript_images` | 单篇插入配图（`position` + `images[]`；local 时 `filePath` 须本机绝对路径） |
 | `haoxu_get_manuscript_typography` | 读单篇正文当前排版 |
 | `haoxu_set_manuscripts_typography` | 批量设置正文样式（`manuscriptIds` 1–200 + `typography`；返回 `{ updated, errors }`） |
@@ -821,9 +846,10 @@ haoxu publish-tasks list --status scheduled --json
 | `haoxu_set_account_tags` | `id`；`tagIds: string[]`（全量替换，可空） |
 | `haoxu_*_delete_*` / `haoxu_delete_*` | 须 `confirm: true` |
 | `haoxu_bind_accounts_proxy` | `accountIds`；`payload`: `{ mode:"direct" }` 或 `{ mode:"managed", ipProxyId, identityReuse? }` 或 `{ mode:"custom", ipProxy:{ host, port, type, ... } }`（勿用顶层 `mode` 代替 `payload`） |
-| `haoxu_set_manuscript_cover` | `manuscriptId`；`source`: local\|url\|clear；local 须 `filePath` 绝对路径；url 须 `url` |
+| `haoxu_set_manuscript_cover` | `manuscriptId`；`source`: local\|url\|body\|clear；local 须 `filePath` 绝对路径；url 须 `url`；body 须 `bodyImageIndex`（≥1 整数）；可选 `stripImageMetadataEnabled`（local/body） |
 | `haoxu_set_manuscript_source_url` | `manuscriptId`；`source`: url\|clear；url 时须 `url` |
 | `haoxu_set_manuscript_summary` | `manuscriptId`；`source`: text\|clear；text 时须 `text`（最长约 120 字） |
+| `haoxu_delete_manuscripts` | `manuscriptIds`（非空）；`confirm: true` |
 | `haoxu_set_manuscripts_typography` | `manuscriptIds`（1–200）；`typography` 至少一个字段（`fontSizePx` / `lineHeight` / `letterSpacingPx` / `textAlign` / `indentPx` / `marginTopPx` / `marginBottomPx`，取值须为档位之一）；未传的字段保留各稿件现值 |
 | `haoxu_create_batch_draft_task` | **完整对齐**上文「存稿 create body」；必填 `accountId`+`manuscriptIds`；原创/作者用 `originalityConfig`（**禁止**顶层 `author`/`isOriginal`）；可选 `start: true`。省略 `originalityConfig`→**未声明原创** |
 | `haoxu_create_publish_tasks_from_batch_draft` | `batchDraftTaskIds`；可选 `schedule: { dateLabel, hour, minute }`（`dateLabel` 为 `今天`/`明天`/`X月X日`，`hour`/`minute` 为两位字符串如 `"08"`/`"00"`，须至少 5 分钟后）、`massSendNotify`、`start` |
@@ -843,9 +869,9 @@ MCP 参数名与 HTTP query/body 对齐（如 `quickFilter`、`groupId`、`assig
 
 ```bash
 npx skills add montisan/skills --skill haoxu-agent -y -g
-npm install -g @haoxu/cli@1.9.1
+npm install -g @haoxu/cli@1.12.0
 # 可选 MCP：
-npm install -g @haoxu/mcp@1.9.1
+npm install -g @haoxu/mcp@1.12.0
 ```
 
 装完后请用户：号续 → 设置 → Agent Bridge → 启用 → 生成 Key → `haoxu auth set-key` → `haoxu auth status --json`。然后**重启当前 Agent / 开新对话**。
