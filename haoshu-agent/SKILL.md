@@ -16,7 +16,7 @@ description: 通过 haoshu CLI 查询号薯账号、稿件、存稿/发布任务
 | 号薯运行 | 桌面端已启动并保持运行 |
 | Agent Bridge 已开启 | 设置 → Agent Bridge → 启用 |
 | API Key | 号薯内生成；`haoshu auth set-key` 写入 `~/.haoshu/config.json` |
-| CLI | `npm i -g @haoshu/cli@1.7.0` 或 `npx @haoshu/cli@1.7.0` |
+| CLI | `npm i -g @haoshu/cli@1.8.0` 或 `npx @haoshu/cli@1.8.0` |
 
 首次：`haoshu auth status --json`（确认 Bridge 通、已登录、`readonly: false`）。
 
@@ -30,7 +30,9 @@ description: 通过 haoshu CLI 查询号薯账号、稿件、存稿/发布任务
 
 ## 能力边界
 
-**允许（读）：** 账号、稿件、存稿任务、发布任务、分组、标签、代理、稿件分类、员工（主账号只读）、`notify summary`、存稿运行聚合态。`accounts list|get` **不含 cookie**；统计字段须 `--include stats`（`stats.fansCount` / `stats.seven.*` / `stats.thirty.*`）；未读字段须 `--include unread`（`unread.unreadCount` / `unread.mentions` 等）。`refresh-metrics` / `refresh-unread` 单账号直接回带对应字段。
+**允许（读）：** 账号、稿件、存稿任务、发布任务、分组、标签、代理、稿件分类、员工（主账号只读）、`notify summary`、存稿运行聚合态、账号笔记列表（`accounts notes`）。`accounts list|get` **不含 cookie**；统计字段须 `--include stats`（`stats.fansCount` / `stats.seven.*` / `stats.thirty.*`）；未读字段须 `--include unread`（`unread.unreadCount` / `unread.mentions` 等）。`refresh-metrics` / `refresh-unread` 单账号直接回带对应字段。
+
+**`accounts notes`：** `haoshu accounts notes <id> [--tab all|published|reviewing|rejected] [--page <n>] [--json]`。默认 `published`、`page` 从 0 起。国内版与海外版按账号类型自动选择。返回 `notes`（每条多一个 `url`）、`page`、`hasMore`。MCP 工具 `haoshu_list_account_notes`。
 
 **允许（写）：** Cookie 导入加号、导出 Cookie（须 `cookieExport`）、账号 owner/备注、移组、设标签（含批量）、分组/标签 CRUD、代理库写与绑定、统计/未读刷新、账号 detect（登录态检测）、稿件路径导入、改删与批量分类/清标题、稿件分类 CRUD、设封面/插配图、存稿 create/start/cancel/delete、从已完成存稿创建发布（`publish-tasks from-draft`）、发布 start/start-batch/start-all-pending/cancel/delete。
 
@@ -44,7 +46,7 @@ description: 通过 haoshu CLI 查询号薯账号、稿件、存稿/发布任务
 
 ## CLI flags 索引（与 `haoshu --help` 对齐）
 
-`--json` `--page` `--page-size` `--group` `--tag` `--q` `--type` `--quick-filter` `--remark` `--category` `--assigned` `--saved` `--cover` `--paths` `--strip-duplicate-title` `--file` `--url` `--clear` `--position` `--files` `--urls` `--payload-file` `--account` `--manuscripts` `--content-mode` `--image-dedup` `--note-empty-title` `--auto-clear-after-save` `--start` `--draft-task` `--ids` `--status` `--content-type` `--completed` `--confirm` `--owner` `--remark1` `--remark2` `--tags` `--accounts` `--mode` `--ip-proxy-id` `--identity-reuse` `--cookie` `--cookie-file` `--poll` `--force` `--no-force` `--host` `--port` `--include` `--label` `--region` `--username` `--password` `--anonymity` `--latency` `--extract-url` `--exit-ip` `--title` `--content`
+`--json` `--page` `--tab` `--page-size` `--group` `--tag` `--q` `--type` `--quick-filter` `--remark` `--category` `--assigned` `--saved` `--cover` `--paths` `--strip-duplicate-title` `--file` `--url` `--clear` `--position` `--files` `--urls` `--payload-file` `--account` `--manuscripts` `--content-mode` `--image-dedup` `--note-empty-title` `--auto-clear-after-save` `--start` `--draft-task` `--original` `--schedule` `--ids` `--status` `--content-type` `--completed` `--confirm` `--owner` `--remark1` `--remark2` `--tags` `--accounts` `--mode` `--ip-proxy-id` `--identity-reuse` `--cookie` `--cookie-file` `--poll` `--force` `--no-force` `--host` `--port` `--include` `--label` `--region` `--username` `--password` `--anonymity` `--latency` `--extract-url` `--exit-ip` `--title` `--content`
 
 ## 常用命令
 
@@ -53,6 +55,7 @@ haoshu auth status --json
 haoshu accounts list --quick-filter mainOnline --json
 haoshu accounts list --include stats,unread --json
 haoshu accounts refresh-unread <id> --json
+haoshu accounts notes <id> --tab published --page 0 --json
 haoshu notify summary --json
 haoshu manuscripts list --assigned unassigned --json
 haoshu manuscripts import-paths --paths /abs/a.zip --json
@@ -60,7 +63,7 @@ haoshu manuscripts patch <id> --title "新标题" --json
 haoshu manuscripts delete <id> --confirm --json
 haoshu draft-tasks create --account <id> --manuscripts m1,m2 --content-mode note --start --json
 haoshu draft-tasks running-summary --json
-haoshu publish-tasks from-draft --draft-task <存稿任务ID> --start --json
+haoshu publish-tasks from-draft --draft-task <存稿任务ID> [--original] [--schedule "YYYY-MM-DD HH:mm"] --start --json
 haoshu publish-tasks cancel <id> --json
 haoshu accounts refresh-metrics <id> --json
 haoshu accounts detect <id> --json
@@ -70,7 +73,7 @@ haoshu accounts detect <id> --json
 
 ## MCP（可选）
 
-`npx -y @haoshu/mcp@1.7.0`，与 CLI 共用 API Key；环境变量 `HAOSHU_API_KEY`、`HAOSHU_BASE_URL`（默认 `http://127.0.0.1:19323`）。
+`npx -y @haoshu/mcp@1.8.0`，与 CLI 共用 API Key；环境变量 `HAOSHU_API_KEY`、`HAOSHU_BASE_URL`（默认 `http://127.0.0.1:19323`）。
 
 ## 安装 Skill
 
