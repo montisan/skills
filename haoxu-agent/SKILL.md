@@ -1,11 +1,11 @@
 ---
 name: haoxu-agent
-description: 通过 haoxu CLI 查询号续账号、稿件、存稿任务、发表任务、分组/标签/代理 IP/稿件分类/员工，支持公众号远端草稿箱与发表记录查询，以及账号元数据写操作（号主/备注、移组、设标签、分组/标签 CRUD）、代理写操作（代理库 CRUD/绑定/检测/Excel 导入、异步 Job）、统计刷新/账号检测/未读刷新（0.6.0）、稿件路径/链接导入（0.7.0）、存稿/发表写操作（0.8.0；存稿 create 支持 originalityConfig 作者/原创等全量配置）、单篇稿件设封面（0.9.0）、公众号面板远端写（1.0.0）、远端草稿箱发表 from-drafts / from-first-drafts（1.1.0）与单篇设原文链接（1.2.0）及单篇插入配图（1.3.0）、导出账号 Cookie（1.4.0，须 cookieExport 权限）、Cookie 导入添加账号（1.5.0）、发表创建接口的 massSendNotify 群发通知开关（1.6.0）、单篇稿件设摘要（1.7.0）、稿件正文样式/排版读写（1.8.0，单篇或批量设字号、行间距、字间距、对齐、缩进、段间距）、导入稿件时剔除图片 AI 元信息（1.9.0，import-paths 的 --strip-image-metadata）、从正文图片中选一张设封面（1.10.0，body-images 与 set-cover --body-image）、导出比特浏览器 JSON 格式 Cookie（1.11.0，accounts cookie --format json）、删除本地稿件（1.12.0，manuscripts delete / haoxu_delete_manuscripts，须 confirm）、存稿按篇数拆分 create-split（1.13.0，固定/随机/chunkSizes；旧 create 仍单任务不拆）、单账号全量数据刷新（1.14.0，`accounts refresh`，统计 + 未读一次调用）。Use when the user asks to query or update HaoXu data, list accounts/manuscripts/draft tasks/publish tasks/groups/tags/ip-proxies/categories/employees, export an account cookie (as a header string or BitBrowser-importable JSON), query WeChat MP drafts/published posts, delete/sync MP drafts, update MP published private, list/upload/delete MP images, patch account owner/remarks, move groups, set tags, manage proxies, bind proxy, test proxy, import proxies, detect account proxy, refresh account metrics, refresh all data of one account, detect account, refresh unread, import manuscripts from paths or links (optionally stripping the duplicate first-line title or image AI metadata), set manuscript cover (from a local file, URL, or an image already in the manuscript body), list manuscript body images, set manuscript source url, set manuscript summary, read or set manuscript article typography (font size, line height, letter spacing, alignment, indent, paragraph spacing) for one or many manuscripts, insert manuscript images, create/start/cancel/delete draft tasks (including originality/author via originalityConfig; create-split for fixed/random/chunkSizes multi-task split), create/start publish tasks from batch draft, create publish tasks from drafts or first drafts, import an account from a cookie, add an account via cookie import, or mentions haoxu CLI / Agent Bridge.
+description: 通过 haoxu CLI 查询号续账号、稿件、存稿任务、发表任务、分组/标签/代理 IP/稿件分类/员工，支持公众号远端草稿箱与发表记录查询，以及账号元数据写操作（号主/备注、移组、设标签、分组/标签 CRUD）、代理写操作（代理库 CRUD/绑定/检测/Excel 导入、异步 Job）、统计刷新/账号检测/未读刷新（0.6.0）、稿件路径/链接导入（0.7.0）、存稿/发表写操作（0.8.0；存稿 create 支持 originalityConfig 作者/原创等全量配置）、单篇稿件设封面（0.9.0）、公众号面板远端写（1.0.0）、远端草稿箱发表 from-drafts / from-first-drafts（1.1.0）与单篇设原文链接（1.2.0）及单篇插入配图（1.3.0）、导出账号 Cookie（1.4.0，须 cookieExport 权限）、Cookie 导入添加账号（1.5.0）、发表创建接口的 massSendNotify 群发通知开关（1.6.0）、单篇稿件设摘要（1.7.0）、稿件正文样式/排版读写（1.8.0，单篇或批量设字号、行间距、字间距、对齐、缩进、段间距）、导入稿件时剔除图片 AI 元信息（1.9.0，import-paths 的 --strip-image-metadata）、从正文图片中选一张设封面（1.10.0，body-images 与 set-cover --body-image）、导出比特浏览器 JSON 格式 Cookie（1.11.0，accounts cookie --format json）、删除本地稿件（1.12.0，manuscripts delete / haoxu_delete_manuscripts，须 confirm）、存稿按篇数拆分 create-split（1.13.0，固定/随机/chunkSizes；旧 create 仍单任务不拆）、单账号全量数据刷新（1.14.0，`accounts refresh`，统计 + 未读一次调用）、稿件排版主题（1.15.0，`manuscripts themes` / `set-theme`，导入 `--theme`，与手动正文样式互斥）。Use when the user asks to query or update HaoXu data, list accounts/manuscripts/draft tasks/publish tasks/groups/tags/ip-proxies/categories/employees, export an account cookie (as a header string or BitBrowser-importable JSON), query WeChat MP drafts/published posts, delete/sync MP drafts, update MP published private, list/upload/delete MP images, patch account owner/remarks, move groups, set tags, manage proxies, bind proxy, test proxy, import proxies, detect account proxy, refresh account metrics, refresh all data of one account, detect account, refresh unread, import manuscripts from paths or links (optionally stripping the duplicate first-line title or image AI metadata), set manuscript cover (from a local file, URL, or an image already in the manuscript body), list manuscript body images, set manuscript source url, set manuscript summary, read or set manuscript article typography (font size, line height, letter spacing, alignment, indent, paragraph spacing) for one or many manuscripts, insert manuscript images, create/start/cancel/delete draft tasks (including originality/author via originalityConfig; create-split for fixed/random/chunkSizes multi-task split), create/start publish tasks from batch draft, create publish tasks from drafts or first drafts, import an account from a cookie, add an account via cookie import, or mentions haoxu CLI / Agent Bridge.
 ---
 
 # 号续 Agent（查询 + 账号元数据写 + 代理写 + 统计刷新）
 
-用 Shell 执行全局命令 `haoxu`，经本机 Agent Bridge 查询或更新号续数据。**0.4.0** 起允许账号元数据与分组/标签写操作；**0.5.0** 起允许代理库写、账号绑定代理、**代理检测**与 Excel 导入（异步 Job）；**0.6.0** 起允许统计刷新、**账号检测**（非代理检测）与未读刷新；**0.7.0** 起允许本机路径（含 zip）与公众号链接导入稿件；**0.8.0** 起允许存稿 create/start/cancel/delete 与发表 from-batch-draft / start / start-batch / start-all-pending；**0.9.0** 起允许单篇稿件设封面（本机路径 / URL / 清除）；**1.0.0** 起允许公众号面板远端写（删草稿、草稿另存、已发表改私密、素材库 list/上传/删图）；**1.1.0** 起允许从远端草稿箱创建发表（`from-drafts` 默认只建、须 `--start` 开跑；`from-first-drafts` 创建后自动开跑）；**1.2.0** 起允许单篇稿件设原文链接（`--url` / `--clear`）；**1.3.0** 起允许单篇稿件插入配图（`position` + `images[]`，本机路径或 URL）；**1.4.0** 起允许单独导出账号 Cookie（`accounts cookie`，须当前登录用户有 `cookieExport` 权限，员工看主账号权限）；**1.5.0** 起允许 **Cookie 导入添加账号**（`accounts import-cookie`，一次一个，与桌面端「添加账号 → Cookie 导入」同链路）；**1.6.0** 起三个发表创建接口支持 `--no-mass-send-notify`（关闭本次发表的群发通知，不传即默认开启）；**1.7.0** 起允许单篇稿件设摘要（`--text` / `--clear`）及 list `--summary` 筛选；**1.8.0** 起允许读写稿件正文样式（`manuscripts typography` / `set-typography`，单篇或 `--ids` 批量，对齐 UI 预览工具条与「设置样式」弹窗）；**1.9.0** 起 `manuscripts import-paths` 支持 `--strip-image-metadata`（导入时剔除正文图片的 EXIF / XMP / IPTC / C2PA 等 AI 元信息，对齐导入弹窗同名开关）；**1.9.1** 修复**定时发表**：`schedule` 的 `hour` / `minute` 单位数会自动补零（如 `8`/`0` → `08`/`00`），日期或时刻不合法时返回带原因的 `400` 而非「服务器内部错误」；**1.10.0** 起允许**从正文图片设封面**（`manuscripts body-images` 列出正文图片，`set-cover --body-image <n>` 选第 n 张，对齐 UI「设置封面」弹窗的「从正文选择」）；**1.11.0** 起 `accounts cookie` 支持 `--format json`（输出比特浏览器可导入的 JSON 数组，对齐桌面端「导出 CK(JSON)」）。**1.12.0** 起允许删除本地稿件（`manuscripts delete` / `haoxu_delete_manuscripts`，须 `--confirm`；未完成存稿明细标为「稿件已删除」）。**1.13.0** 起允许存稿 **create-split**（按固定篇数 / 随机范围 / `chunkSizes` 拆成多条任务；旧 `create` / `haoxu_create_batch_draft_task` 仍是单任务、**不**按 `manuscriptsPerTweet` 拆分）。**1.14.0** 起允许单账号全量数据刷新（`accounts refresh <id>`，统计 + 未读一次调用，等价于 `refresh-metrics` 后接 `refresh-unread`）。**不支持飞书导入**、批量设封面/原文链接/摘要/配图 API、删发表任务、发表任务 UPDATE、**扫码添加账号**、删账号等。
+用 Shell 执行全局命令 `haoxu`，经本机 Agent Bridge 查询或更新号续数据。**0.4.0** 起允许账号元数据与分组/标签写操作；**0.5.0** 起允许代理库写、账号绑定代理、**代理检测**与 Excel 导入（异步 Job）；**0.6.0** 起允许统计刷新、**账号检测**（非代理检测）与未读刷新；**0.7.0** 起允许本机路径（含 zip）与公众号链接导入稿件；**0.8.0** 起允许存稿 create/start/cancel/delete 与发表 from-batch-draft / start / start-batch / start-all-pending；**0.9.0** 起允许单篇稿件设封面（本机路径 / URL / 清除）；**1.0.0** 起允许公众号面板远端写（删草稿、草稿另存、已发表改私密、素材库 list/上传/删图）；**1.1.0** 起允许从远端草稿箱创建发表（`from-drafts` 默认只建、须 `--start` 开跑；`from-first-drafts` 创建后自动开跑）；**1.2.0** 起允许单篇稿件设原文链接（`--url` / `--clear`）；**1.3.0** 起允许单篇稿件插入配图（`position` + `images[]`，本机路径或 URL）；**1.4.0** 起允许单独导出账号 Cookie（`accounts cookie`，须当前登录用户有 `cookieExport` 权限，员工看主账号权限）；**1.5.0** 起允许 **Cookie 导入添加账号**（`accounts import-cookie`，一次一个，与桌面端「添加账号 → Cookie 导入」同链路）；**1.6.0** 起三个发表创建接口支持 `--no-mass-send-notify`（关闭本次发表的群发通知，不传即默认开启）；**1.7.0** 起允许单篇稿件设摘要（`--text` / `--clear`）及 list `--summary` 筛选；**1.8.0** 起允许读写稿件正文样式（`manuscripts typography` / `set-typography`，单篇或 `--ids` 批量，对齐 UI 预览工具条与「设置样式」弹窗）；**1.9.0** 起 `manuscripts import-paths` 支持 `--strip-image-metadata`（导入时剔除正文图片的 EXIF / XMP / IPTC / C2PA 等 AI 元信息，对齐导入弹窗同名开关）；**1.9.1** 修复**定时发表**：`schedule` 的 `hour` / `minute` 单位数会自动补零（如 `8`/`0` → `08`/`00`），日期或时刻不合法时返回带原因的 `400` 而非「服务器内部错误」；**1.10.0** 起允许**从正文图片设封面**（`manuscripts body-images` 列出正文图片，`set-cover --body-image <n>` 选第 n 张，对齐 UI「设置封面」弹窗的「从正文选择」）；**1.11.0** 起 `accounts cookie` 支持 `--format json`（输出比特浏览器可导入的 JSON 数组，对齐桌面端「导出 CK(JSON)」）。**1.12.0** 起允许删除本地稿件（`manuscripts delete` / `haoxu_delete_manuscripts`，须 `--confirm`；未完成存稿明细标为「稿件已删除」）。**1.13.0** 起允许存稿 **create-split**（按固定篇数 / 随机范围 / `chunkSizes` 拆成多条任务；旧 `create` / `haoxu_create_batch_draft_task` 仍是单任务、**不**按 `manuscriptsPerTweet` 拆分）。**1.14.0** 起允许单账号全量数据刷新（`accounts refresh <id>`，统计 + 未读一次调用，等价于 `refresh-metrics` 后接 `refresh-unread`）。**1.15.0** 起允许读写稿件排版主题（`manuscripts themes` / `set-theme`，单篇或 `--ids` 批量；导入支持 `--theme`；主题与手动正文样式互斥）。**不支持飞书导入**、批量设封面/原文链接/摘要/配图 API、删发表任务、发表任务 UPDATE、**扫码添加账号**、删账号等。
 
 适用于任何能跑终端的 Agent（Cursor、Claude Code、Codex、WorkBuddy、QoderWork、QClaw、OpenClaw、Trae 等），不限单一产品。
 
@@ -81,6 +81,8 @@ haoxu auth status --json
 
 **允许（写，1.8.0）：** 稿件正文样式/排版——读 `manuscripts typography <id>`，写 `manuscripts set-typography`（单篇位置参数或 `--ids` 批量，**最多 200 篇**）。字段：字号 / 行间距 / 字间距 / 对齐 / 首行缩进 / 段前距 / 段后距。**未指定的字段保留各稿件正文现值**；取值须为下拉档位之一，档位外直接 `400`。成功 `{ updated: [{ id, typography, contentWordCount }], errors: [{ id, message }] }`——**逐篇累计，个别失败不影响其余稿件**，务必检查 `errors`。
 
+**允许（写，1.15.0）：** 稿件排版主题——`manuscripts themes` 取白名单（`classic-*` / `elegant-*` / `concise-*` 共 **30** 个），`manuscripts set-theme (<id>|--ids) (--theme <themeId>|--clear)` 单篇或批量设置（**最多 200 篇**），导入时可用 `--theme` 直接带主题。**未知 themeId 返回 `400`，不会静默清空**；清除须显式 `--clear`。**与手动正文样式互斥**：已设主题的稿件再 `set-typography` 会失败，须先 `set-theme --clear`。设主题后存稿/发表自动按主题渲染，无需额外操作。
+
 **允许（写，1.0.0）：** 公众号面板远端写——删远端草稿（`mp-drafts-delete`，须 `--confirm`）；草稿另存到其他账号（`mp-drafts-sync`，全同步可能较久，可选 `--upload-material`）；已发表设/取消仅自己可见（`mp-published-private`，`--items` / `--items-file`）；素材库 list / 本机路径上传 / 删图（`mp-images`、`mp-images-upload`、`mp-images-delete`，上传路径须**绝对路径**且号续与 Agent **同机**；删图须 `--confirm` 与 `--group-ids`）。
 
 **允许（写，1.1.0）：** 从远端草稿箱创建发表——指定草稿（`publish-tasks from-drafts`，`--drafts` / `--drafts-file`，可选定时与 `--start`）；各账号首条草稿（`publish-tasks from-first-drafts`，`--draft-type article|sticker`，**创建后自动开跑**）。可先 `accounts mp-drafts` 查 `platformDraftId`。
@@ -124,6 +126,8 @@ haoxu auth status --json
 | set-summary | ✅ | ✅（对齐 set-cover） | — |
 | delete manuscripts | ✅ | ✅（对齐 set-cover） | — |
 | typography / set-typography | ✅ | ✅（对齐 set-cover） | — |
+| themes | ✅ | ✅（只读） | — |
+| set-theme | ✅ | ✅（对齐 set-cover） | — |
 | insert-images | ✅ | ✅（对齐 set-cover） | — |
 
 ## 安装 CLI
@@ -421,7 +425,7 @@ haoxu manuscripts list --summary unset --json
 
 对应桌面端「内容预览」里的排版工具条与稿件列表的「设置样式」批量弹窗。`typography` 读当前排版；`set-typography` 写，单篇用位置参数、批量用 `--ids`（最多 **200** 篇）。
 
-**未指定的字段保留各稿件正文现值**——只改字号就只传 `--font-size`；要复刻 UI 批量弹窗的「整套重设」，把七项全部显式传上。取值须为下拉档位之一，否则 `400 VALIDATION_ERROR`（档位外的值写进正文后也会在下次读取时被吸附掉）。
+**未指定的字段保留各稿件正文现值**——只改字号就只传 `--font-size`；要复刻 UI 批量弹窗的「整套重设」，把七项全部显式传上。取值须为下拉档位之一，否则 `400 VALIDATION_ERROR`（档位外的值写进正文后也会在下次读取时被吸附掉）。**已启用排版主题的稿件不能改手动样式**（`400`，两者互斥；先 `set-theme --clear`）。
 
 | 字段 | CLI flag | body 字段 | 可选值（首项为默认） |
 |------|----------|-----------|----------------------|
@@ -455,6 +459,22 @@ haoxu manuscripts set-typography --ids m1,m2 --payload-file ./typography.json --
   "marginBottomPx": 8
 }
 ```
+
+### 稿件排版主题（1.15.0）
+
+`themeId` 取自白名单（`classic-*` / `elegant-*` / `concise-*` 共 **30** 个，用 `themes` 取；每项含 `id` / `title` / `themeColor`）。**未知 id 返回 `400`，不会静默清空**；清除须显式 `--clear`（批量 body 为 `themeId: null`）。**设主题后存稿/发表自动按主题渲染**，无需额外操作。`manuscripts list` 新增「主题」列，`list` / `get` 响应含 `themeId`（`null` = 未启用）。
+
+**主题与手动样式互斥**：已设主题的稿件再 `set-typography` 会失败（`该稿件已启用排版主题…`），须先 `set-theme --clear` 再设手动样式。批量上限 **200** 篇。
+
+```bash
+haoxu manuscripts themes --json
+haoxu manuscripts set-theme <稿件ID> --theme elegant-classic-blue --json
+haoxu manuscripts set-theme --ids m1,m2 --theme classic-classic-blue --json
+haoxu manuscripts set-theme --ids m1,m2 --clear --json
+haoxu manuscripts import-paths --paths /abs/a.html --theme concise-emerald-green --json
+```
+
+批量返回 `{ updated: [{ id, themeId }], errors: [{ id, message }] }`，**逐篇累计**，务必检查 `errors`。
 
 ### 单篇稿件插入配图（1.3.0）
 
@@ -853,8 +873,8 @@ haoxu publish-tasks list --status scheduled --json
 | `haoxu_refresh_account_unread` / `haoxu_refresh_account_unread_batch` | 单账号 / 批量未读刷新（批量异步） |
 | `haoxu_test_proxy_connectivity` / `haoxu_proxy_lookup_exit_ip` | 无库 test / 查出口 IP |
 | `haoxu_get_job` | 查询异步 Job 状态 |
-| `haoxu_import_manuscripts_from_paths` | 本机绝对路径导入稿件（同步 `{ imported, errors }`；可选 `stripDuplicateTitleEnabled` / `stripImageMetadataEnabled`） |
-| `haoxu_import_manuscripts_from_links` | 公众号链接导入稿件（同步 `{ imported, errors }`） |
+| `haoxu_import_manuscripts_from_paths` | 本机绝对路径导入稿件（同步 `{ imported, errors }`；可选 `stripDuplicateTitleEnabled` / `stripImageMetadataEnabled` / `themeId`） |
+| `haoxu_import_manuscripts_from_links` | 公众号链接导入稿件（同步 `{ imported, errors }`；可选 `themeId`） |
 | `haoxu_list_manuscript_body_images` | 列出单篇正文中可作封面的图片（`{ images: [{ index, kind, src }] }`，index 从 1 起） |
 | `haoxu_set_manuscript_cover` | 单篇设封面（`source`: local/url/body/clear；local 时 `filePath` 须本机绝对路径、同机可读；body 时 `bodyImageIndex` 为正文第 n 张图） |
 | `haoxu_set_manuscript_source_url` | 单篇设原文链接（`source`: url/clear；url 时须 `url`） |
@@ -863,6 +883,9 @@ haoxu publish-tasks list --status scheduled --json
 | `haoxu_insert_manuscript_images` | 单篇插入配图（`position` + `images[]`；local 时 `filePath` 须本机绝对路径） |
 | `haoxu_get_manuscript_typography` | 读单篇正文当前排版 |
 | `haoxu_set_manuscripts_typography` | 批量设置正文样式（`manuscriptIds` 1–200 + `typography`；返回 `{ updated, errors }`） |
+| `haoxu_list_manuscript_themes` | 列出排版主题白名单（无参数；`{ items: [{ id, title, themeColor }], total }`，共 30 个） |
+| `haoxu_set_manuscript_theme` | 单篇设/清排版主题（`manuscriptId`；`source`: theme\|clear；theme 时须 `themeId`；返回 `{ themeId }`） |
+| `haoxu_set_manuscripts_theme` | 批量设/清排版主题（`manuscriptIds` 1–200；`themeId` 字符串或 `null` 清除；返回 `{ updated, errors }`） |
 | `haoxu_create_batch_draft_task` | 创建**单条**存稿任务（可选 `start`）；**不**按篇数拆分 |
 | `haoxu_create_split_batch_draft_tasks` | 按固定篇数 / 随机范围 / `chunkSizes` 拆成多条后创建（1.13.0；三选一；可选 `start`；响应 `{ created, chunkSizes }`） |
 | `haoxu_start_batch_draft_task` | 启动存稿任务 |
@@ -888,7 +911,9 @@ haoxu publish-tasks list --status scheduled --json
 | `haoxu_set_manuscript_source_url` | `manuscriptId`；`source`: url\|clear；url 时须 `url` |
 | `haoxu_set_manuscript_summary` | `manuscriptId`；`source`: text\|clear；text 时须 `text`（最长约 120 字） |
 | `haoxu_delete_manuscripts` | `manuscriptIds`（非空）；`confirm: true` |
-| `haoxu_set_manuscripts_typography` | `manuscriptIds`（1–200）；`typography` 至少一个字段（`fontSizePx` / `lineHeight` / `letterSpacingPx` / `textAlign` / `indentPx` / `marginTopPx` / `marginBottomPx`，取值须为档位之一）；未传的字段保留各稿件现值 |
+| `haoxu_set_manuscripts_typography` | `manuscriptIds`（1–200）；`typography` 至少一个字段（`fontSizePx` / `lineHeight` / `letterSpacingPx` / `textAlign` / `indentPx` / `marginTopPx` / `marginBottomPx`，取值须为档位之一）；未传的字段保留各稿件现值；已设排版主题的稿件会逐篇失败 |
+| `haoxu_set_manuscript_theme` | `manuscriptId`；`source`: theme\|clear；theme 时须 `themeId`（白名单，先用 `haoxu_list_manuscript_themes` 取）；未知 id 400 |
+| `haoxu_set_manuscripts_theme` | `manuscriptIds`（1–200）；`themeId` 必传，字符串设置 / `null` 清除；未知 id 400，不会静默清空；返回 `{ updated, errors }` 逐篇累计 |
 | `haoxu_create_batch_draft_task` | **完整对齐**上文「存稿 create body」；必填 `accountId`+`manuscriptIds`；原创/作者用 `originalityConfig`（**禁止**顶层 `author`/`isOriginal`）；可选 `start: true`。省略 `originalityConfig`→**未声明原创**。**单任务、不拆分** |
 | `haoxu_create_split_batch_draft_tasks` | 对齐「存稿 create-split」；必填 `accountId`+`manuscriptIds`；切分三选一 `manuscriptsPerTweet` \| `randomMin`+`randomMax` \| `chunkSizes`（都不传→默认固定 `min(8,n)`）；可选 `start`；`mergeMode` 由各 chunk 推导 |
 | `haoxu_create_publish_tasks_from_batch_draft` | `batchDraftTaskIds`；可选 `schedule: { dateLabel, hour, minute }`（`dateLabel` 为 `今天`/`明天`/`X月X日`，`hour`/`minute` 为两位字符串如 `"08"`/`"00"`，须至少 5 分钟后）、`massSendNotify`、`start` |
