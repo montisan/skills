@@ -16,7 +16,7 @@ description: 通过 haoshi CLI 查询号视账号、图文、视频、存稿/发
 | 号视运行 | 桌面端已启动并保持运行 |
 | Agent Bridge 已开启 | 设置 → Agent Bridge → 启用 |
 | API Key | 号视内生成；`haoshi auth set-key` 写入 `~/.haoshi/config.json` |
-| CLI | `npm i -g @haoshi/cli@1.0.0` 或 `npx @haoshi/cli@1.0.0` |
+| CLI | `npm i -g @haoshi/cli@1.1.0` 或 `npx @haoshi/cli@1.1.0` |
 
 首次：`haoshi auth status --json`（确认 Bridge 通、已登录、`readonly: false`）。
 
@@ -30,7 +30,7 @@ description: 通过 haoshi CLI 查询号视账号、图文、视频、存稿/发
 
 ## 能力边界
 
-**允许（读）：** 账号、图文、视频、图文/视频存稿与发表任务、评论任务、分组、标签、代理、图文分类、视频分类、员工（主账号只读）、`notify summary`、存稿运行聚合态。`accounts list|get` **不含 cookie**；统计字段须 `--include stats`；未读字段须 `--include unread`。
+**允许（读）：** 账号、图文、视频、图文/视频存稿与发表任务、评论任务、分组、标签、代理、图文分类、视频分类、员工（主账号只读）、`notify summary`、存稿运行聚合态。`accounts list|get` **不含 cookie**；统计字段须 `--include stats`；未读字段须 `--include unread`（`unreadNotice`/`unreadComment`/`unreadBullet`/`unreadDm`）。
 
 **允许（写）：** Cookie 导入加号、导出 Cookie（须 `cookieExport`）、账号 owner/备注、移组、设标签、分组/标签/分类 CRUD、代理库写与绑定、统计/未读刷新、账号 detect、图文路径导入、改标题/描述/正文、整组换配图、批量描述、清除已存稿未分配稿件、设封面/插配图。存稿可用 `--payload-file` 传 `options.markTag`（话题标签）。发表 `from-draft` / `video-tasks from-draft` 支持三种发表方式（见下），以及 `update-schedule`、`delete-completed`。视频素材、视频分类、视频存稿/发表、评论任务同样可查可写。
 
@@ -46,9 +46,7 @@ description: 通过 haoshi CLI 查询号视账号、图文、视频、存稿/发
 
 **`--quick-filter` 取值：** `all` / `mainOnline` / `mainOffline` / `renewedToday` / `notRenewedToday` / `needsAttention` / `withIp` / `direct`。在线离线只认视频号；`renewedToday` / `notRenewedToday` 按距上次延续是否不足 8 小时；旧值 `online` / `offline` / `creator*` 按视频号那组解释。
 
-**`--type` 取值：** `all` / `official` / `cn` / `global` / `mini_program`。`official` = 全部视频号（国内版 + 海外版）；`cn` / `global` 精确到版本；`mini_program` 是历史取值，号视不再产生。
-
-**海外版账号（`--type global`）三处不同：** ① 创作中心没有数据统计，`refresh-metrics` 回 `ACCOUNT_NOT_READY`，批量刷新算跳过而非失败、默认目标集也不含它；② 主页没有私信接口，`refresh-unread` 可用但只写通知三项，`unread.chatUnreadCount` 恒为 0；③ 创作中心没有长文入口，`draft-tasks create` 只能 `--content-mode note`。Cookie 导入加号时账号版本由 Cookie 条目的 domain 自动判定（纯 `k=v` 头无 domain，按国内版处理）。
+**`--type` 取值：** 只有 `all` 与 `finder`，二者等价（号视只有视频号）。省略 `--type` 即查全部。`official` / `cn` / `global` / `mini_program` 会被 Bridge 拒绝（`Invalid type`），不要再用。
 
 ## CLI flags 索引（与 `haoshi --help` 对齐）
 
@@ -86,7 +84,7 @@ haoshi accounts detect <id> --json
 
 ## MCP（可选）
 
-`npx -y @haoshi/mcp@1.0.0`，与 CLI 共用 API Key；环境变量 `HAOSHI_API_KEY`、`HAOSHI_BASE_URL`（默认 `http://127.0.0.1:19327`）。
+`npx -y @haoshi/mcp@1.1.0`，与 CLI 共用 API Key；环境变量 `HAOSHI_API_KEY`、`HAOSHI_BASE_URL`（默认 `http://127.0.0.1:19327`）。
 
 ## 安装 Skill
 
